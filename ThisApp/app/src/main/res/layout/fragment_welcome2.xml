@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+
+        <TextView
+            android:id="@+id/header_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="28dp"
+            android:fontFamily="cursive"
+            android:gravity="center"
+            android:shadowColor="#80000000"
+            android:shadowDx="4"
+            android:shadowDy="6"
+            android:shadowRadius="12"
+            android:text="Track your Moods,\n Write your Diarys"
+            android:textColor="@android:color/black"
+            android:textSize="43sp" />
+
+        <ImageView
+            android:id="@+id/illustration_image"
+            android:layout_width="225dp"
+            android:layout_height="325dp"
+            android:layout_gravity="center"
+            android:src="@drawable/welcome2"
+            android:layout_marginBottom="10dp"/>
+
+        <!-- Pagination Dots -->
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

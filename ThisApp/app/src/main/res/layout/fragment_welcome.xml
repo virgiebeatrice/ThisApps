@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+
+        <TextView
+            android:id="@+id/header_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:fontFamily="cursive"
+            android:gravity="center"
+            android:shadowColor="#80000000"
+            android:shadowDx="4"
+            android:shadowDy="6"
+            android:shadowRadius="12"
+            android:text="Welcome to"
+            android:textColor="@android:color/black"
+            android:textSize="75sp" />
+
+        <ImageView
+            android:id="@+id/illustration_image"
+            android:layout_width="350dp"
+            android:layout_height="350dp"
+            android:layout_gravity="center"
+            android:src="@drawable/gambar_welcome" />
+
+        <!-- Title and Subtitle Text -->
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="THIS"
+            android:textSize="50sp"
+            android:textColor="@android:color/black"
+            android:fontFamily="cursive"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:shadowColor="#80000000"
+            android:shadowDx="4"
+            android:shadowDy="6"
+            android:shadowRadius="12"/>
+
+        <TextView
+            android:id="@+id/subtitle_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="(Things I Couldn't Say)"
+            android:textSize="15sp"
+            android:textColor="@android:color/black"
+            android:fontFamily="serif"
+            android:gravity="center"
+            android:shadowColor="#80000000"
+            android:shadowDx="4"
+            android:shadowDy="6"
+            android:shadowRadius="12"/>
+
+        <!-- Pagination Dots -->
+        <LinearLayout
+            android:id="@+id/pagination_dots"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="24dp"
+            android:gravity="center">
+
+            <!-- First Dot (Active) -->
+            <View
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:backgroundTint="@android:color/black"
+                android:background="@drawable/active_dot_shape"
+                android:layout_margin="4dp"/>
+
+            <!-- Second Dot -->
+            <View
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:backgroundTint="#FF8C82"
+                android:background="@drawable/active_dot_shape"
+                android:layout_margin="4dp"/>
+
+            <!-- Third Dot -->
+            <View
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:backgroundTint="#96D35F"
+                android:background="@drawable/active_dot_shape"
+                android:layout_margin="4dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
