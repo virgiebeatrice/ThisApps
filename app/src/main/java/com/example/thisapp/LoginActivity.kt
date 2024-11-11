@@ -6,36 +6,36 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var usernameEditText: EditText
+    private lateinit var emailEditText: EditText
     private lateinit var passwordEditText: EditText
     private lateinit var loginButton: Button
     private lateinit var signUpButton: Button
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        // Inisialisasi FirebaseAuth
+        auth = FirebaseAuth.getInstance()
+
         // Inisialisasi elemen-elemen dari layout
-        usernameEditText = findViewById(R.id.editText)
-        passwordEditText = findViewById(R.id.editText2)
-        loginButton = findViewById(R.id.outlinedButton)
+        emailEditText = findViewById(R.id.editText) // Ganti dengan ID EditText untuk email
+        passwordEditText = findViewById(R.id.editText2) // Ganti dengan ID EditText untuk password
+        loginButton = findViewById(R.id.loginButton)
+        signUpButton = findViewById(R.id.signupButton)
 
         // Set OnClickListener untuk tombol Login
         loginButton.setOnClickListener {
-            val username = usernameEditText.text.toString().trim()
+            val email = emailEditText.text.toString().trim()
             val password = passwordEditText.text.toString().trim()
 
-            if (validateInput(username, password)) {
-                // Panggil fungsi login atau lakukan hal lain sesuai kebutuhan
-                Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
-
-                // Setelah login berhasil, Anda bisa pindah ke activity utama
-                // val intent = Intent(this, MainActivity::class.java)
-                // startActivity(intent)
-                // finish()
+            if (validateInput(email, password)) {
+                loginUser(email, password)
             }
         }
 
@@ -48,12 +48,33 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    // Fungsi validasi untuk input username dan password
-    private fun validateInput(username: String, password: String): Boolean {
+    private fun loginUser(email: String, password: String) {
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Login berhasil, pindah ke MainActivity
+                    Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    // Login gagal
+                    Toast.makeText(this, "Login failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+    // Fungsi validasi untuk input email dan password
+    private fun validateInput(email: String, password: String): Boolean {
         return when {
-            username.isEmpty() -> {
-                usernameEditText.error = "Username is required"
-                usernameEditText.requestFocus()
+            email.isEmpty() -> {
+                emailEditText.error = "Email is required"
+                emailEditText.requestFocus()
+                false
+            }
+            !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
+                emailEditText.error = "Please enter a valid email"
+                emailEditText.requestFocus()
                 false
             }
             password.isEmpty() -> {

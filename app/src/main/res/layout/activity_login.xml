@@ -19,7 +19,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
-
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/editText2"
         android:layout_width="250dp"
@@ -34,9 +33,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText" />
 
-
+    <!-- Tombol login hanya satu yang diperlukan -->
     <Button
-        android:id="@+id/outlinedButton"
+        android:id="@+id/loginButton"
         style="?attr/materialButtonOutlinedStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -48,6 +47,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Tombol sign up untuk berpindah ke halaman signup -->
+    <Button
+        android:id="@+id/signupButton"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="128dp"
+        android:fontFamily="@font/urbanist_bold"
+        android:text="SIGN UP"
+        android:textColor="@color/yellow"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
