@@ -7,6 +7,8 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class SignupActivity : AppCompatActivity() {
 
@@ -16,10 +18,16 @@ class SignupActivity : AppCompatActivity() {
     private lateinit var signUpButton: Button
     private lateinit var loginButton: Button
     private lateinit var haveAccountText: TextView
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
+
+        // Inisialisasi Firebase Authentication dan Firestore
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
 
         // Inisialisasi elemen-elemen dari layout
         usernameEditText = findViewById(R.id.editText)
@@ -36,27 +44,49 @@ class SignupActivity : AppCompatActivity() {
             val password = passwordEditText.text.toString().trim()
 
             if (validateInput(username, email, password)) {
-                // Panggil fungsi sign up atau lakukan hal lain sesuai kebutuhan
-                Toast.makeText(this, "Sign Up successful", Toast.LENGTH_SHORT).show()
-
-                // Setelah berhasil sign up, Anda bisa berpindah ke Activity lain atau menutup activity ini
-                // Misalnya, pindah ke activity Home
-                // val intent = Intent(this, HomeActivity::class.java)
-                // startActivity(intent)
-                // finish()
+                signUpUser(username, email, password)
             }
         }
 
-        // Set OnClickListener untuk tombol Log In
+        // Set OnClickListener untuk tombol Login, pindah ke halaman LoginActivity
         loginButton.setOnClickListener {
-            // Pindah ke activity Log In jika pengguna sudah punya akun
+            Toast.makeText(this, "Login button clicked", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
         }
     }
 
-    // Fungsi validasi untuk input username, email, dan password
+    private fun signUpUser(username: String, email: String, password: String) {
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Jika registrasi berhasil, simpan data pengguna di Firestore
+                    val userId = auth.currentUser?.uid
+                    val user = hashMapOf(
+                        "username" to username,
+                        "email" to email
+                    )
+                    userId?.let {
+                        saveUserDataToFirestore(it, user)
+                    }
+                } else {
+                    showToast("Sign Up failed: ${task.exception?.message}")
+                }
+            }
+    }
+
+    private fun saveUserDataToFirestore(userId: String, user: Map<String, String>) {
+        db.collection("users").document(userId).set(user)
+            .addOnSuccessListener {
+                showToast("Sign Up successful")
+                navigateToMainActivity()
+            }
+            .addOnFailureListener { e ->
+                showToast("Failed to save user data: ${e.message}")
+            }
+    }
+
     private fun validateInput(username: String, email: String, password: String): Boolean {
         return when {
             username.isEmpty() -> {
@@ -66,6 +96,11 @@ class SignupActivity : AppCompatActivity() {
             }
             email.isEmpty() -> {
                 emailEditText.error = "Email is required"
+                emailEditText.requestFocus()
+                false
+            }
+            !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
+                emailEditText.error = "Please enter a valid email"
                 emailEditText.requestFocus()
                 false
             }
@@ -81,5 +116,15 @@ class SignupActivity : AppCompatActivity() {
             }
             else -> true
         }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun navigateToMainActivity() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }
