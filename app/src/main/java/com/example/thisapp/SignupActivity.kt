@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -15,9 +15,9 @@ class SignupActivity : AppCompatActivity() {
     private lateinit var usernameEditText: EditText
     private lateinit var emailEditText: EditText
     private lateinit var passwordEditText: EditText
+    private lateinit var passwordVisibilityToggle: ImageView
     private lateinit var signUpButton: Button
     private lateinit var loginButton: Button
-    private lateinit var haveAccountText: TextView
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
 
@@ -33,9 +33,9 @@ class SignupActivity : AppCompatActivity() {
         usernameEditText = findViewById(R.id.editText)
         emailEditText = findViewById(R.id.textInputEditText)
         passwordEditText = findViewById(R.id.editText2)
+        passwordVisibilityToggle = findViewById(R.id.passwordVisibilityToggle) // Menghubungkan ImageView untuk toggle
         signUpButton = findViewById(R.id.signupButton)
         loginButton = findViewById(R.id.loginButton)
-        haveAccountText = findViewById(R.id.textView3)
 
         // Set OnClickListener untuk tombol Sign Up
         signUpButton.setOnClickListener {
@@ -50,10 +50,21 @@ class SignupActivity : AppCompatActivity() {
 
         // Set OnClickListener untuk tombol Login, pindah ke halaman LoginActivity
         loginButton.setOnClickListener {
-            Toast.makeText(this, "Login button clicked", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
+        }
+
+        // Fungsi untuk toggle visibilitas password
+        passwordVisibilityToggle.setOnClickListener {
+            if (passwordEditText.inputType == 129) { // Password visibility off
+                passwordEditText.inputType = 1 // Set input type to text
+                passwordVisibilityToggle.setImageResource(R.drawable.eye_open) // Ganti gambar mata
+            } else { // Password visibility on
+                passwordEditText.inputType = 129 // Set input type to password
+                passwordVisibilityToggle.setImageResource(R.drawable.eye_closed) // Ganti gambar mata
+            }
+            passwordEditText.setSelection(passwordEditText.text.length) // Agar posisi kursor tetap di akhir
         }
     }
 
@@ -80,7 +91,10 @@ class SignupActivity : AppCompatActivity() {
         db.collection("users").document(userId).set(user)
             .addOnSuccessListener {
                 showToast("Sign Up successful")
-                navigateToMainActivity()
+                // Pindah ke halaman login setelah sign up sukses
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+                finish() // menutup SignupActivity
             }
             .addOnFailureListener { e ->
                 showToast("Failed to save user data: ${e.message}")
@@ -88,30 +102,27 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun validateInput(username: String, email: String, password: String): Boolean {
+        val passwordPattern = Regex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{6}\$")
+
         return when {
             username.isEmpty() -> {
                 usernameEditText.error = "Username is required"
-                usernameEditText.requestFocus()
                 false
             }
             email.isEmpty() -> {
                 emailEditText.error = "Email is required"
-                emailEditText.requestFocus()
                 false
             }
             !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
                 emailEditText.error = "Please enter a valid email"
-                emailEditText.requestFocus()
                 false
             }
             password.isEmpty() -> {
                 passwordEditText.error = "Password is required"
-                passwordEditText.requestFocus()
                 false
             }
-            password.length < 6 -> {
-                passwordEditText.error = "Password should be at least 6 characters"
-                passwordEditText.requestFocus()
+            !password.matches(passwordPattern) -> {
+                passwordEditText.error = "Password must contain uppercase, lowercase, number, special character, and be 6 characters long"
                 false
             }
             else -> true
