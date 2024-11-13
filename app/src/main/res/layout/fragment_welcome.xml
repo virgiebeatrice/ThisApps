@@ -64,38 +64,6 @@
             android:shadowRadius="12"/>
 
         <!-- Pagination Dots -->
-        <LinearLayout
-            android:id="@+id/pagination_dots"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="24dp"
-            android:gravity="center">
-
-            <!-- First Dot (Active) -->
-            <View
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:backgroundTint="@android:color/black"
-                android:background="@drawable/active_dot_shape"
-                android:layout_margin="4dp"/>
-
-            <!-- Second Dot -->
-            <View
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:backgroundTint="#FF8C82"
-                android:background="@drawable/active_dot_shape"
-                android:layout_margin="4dp"/>
-
-            <!-- Third Dot -->
-            <View
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:backgroundTint="#96D35F"
-                android:background="@drawable/active_dot_shape"
-                android:layout_margin="4dp"/>
-        </LinearLayout>
 
     </LinearLayout>
 
