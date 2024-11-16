@@ -38,6 +38,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Next"
+            android:fontFamily="@font/urbanist_bold"
+            android:textSize="17sp"
             android:background="@drawable/button_next"
             android:textColor="#000000" />
 
