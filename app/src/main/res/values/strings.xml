@@ -6,7 +6,6 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
@@ -45,4 +44,26 @@
     </string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="log_in">LOG IN</string>
+    <string name="sign_up">SIGN UP</string>
+    <string name="february_28_2024">February, 28 2024</string>
+    <string name="track_your_mood">Track Your Mood</string>
+    <string name="username">Username</string>
+    <string name="done">Done</string>
+    <string name="title">Title</string>
+    <string name="name">Name</string>
+    <string name="your_name">Your Name</string>
+    <string name="e_mail">E-mail</string>
+    <string name="example_gmail_com">example@gmail.com</string>
+    <string name="pin">****</string>
+    <string name="make_your_pin_safety">Make Your PIN Safety</string>
+    <string name="avatar">Avatar</string>
+    <string name="password">Password</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="face_scan_icon">Face scan icon</string>
+    <string name="sign_up_for_your_mood_nby_scanning_your_face">Sign up for your mood\nby scanning your face</string>
+    <string name="create_your_account">Create your account</string>
+    <string name="home">Home</string>
+    <string name="profile">Profile</string>
 </resources>
