@@ -25,14 +25,17 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        // Initialize Firebase Auth
         auth = FirebaseAuth.getInstance()
 
+        // Initialize views
         emailEditText = findViewById(R.id.editText)
         passwordEditText = findViewById(R.id.editText2)
         passwordVisibilityToggle1 = findViewById(R.id.passwordVisibilityToggle1)
         loginButton = findViewById(R.id.loginButton)
         signUpButton = findViewById(R.id.signupButton)
 
+        // Login Button click listener
         loginButton.setOnClickListener {
             val email = emailEditText.text.toString().trim()
             val password = passwordEditText.text.toString().trim()
@@ -42,12 +45,12 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        // Listener untuk toggle visibilitas password
+        // Toggle password visibility
         passwordVisibilityToggle1.setOnClickListener {
             togglePasswordVisibility()
         }
 
-        // Listener untuk tombol "Enter" pada keyboard
+        // Handle "Enter" key on keyboard
         passwordEditText.setOnEditorActionListener { _, _, _ ->
             val email = emailEditText.text.toString().trim()
             val password = passwordEditText.text.toString().trim()
@@ -57,41 +60,41 @@ class LoginActivity : AppCompatActivity() {
             true
         }
 
-        // Set OnClickListener untuk tombol Sign Up
+        // Go to SignupActivity if no account
         signUpButton.setOnClickListener {
-            // Pindah ke activity Sign Up jika pengguna belum punya akun
             val intent = Intent(this, SignupActivity::class.java)
             startActivity(intent)
             finish()
         }
     }
 
-    // Fungsi toggle visibilitas password
+    // Toggle password visibility
     private fun togglePasswordVisibility() {
         if (passwordEditText.inputType == (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
-            // Password tersembunyi, tampilkan password
+            // Password is hidden, show it
             passwordEditText.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            passwordVisibilityToggle1.setImageResource(R.drawable.eye_open) // Ganti dengan ikon mata terbuka
+            passwordVisibilityToggle1.setImageResource(R.drawable.eye_open) // Open eye icon
         } else {
-            // Password terlihat, sembunyikan password
+            // Password is visible, hide it
             passwordEditText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-            passwordVisibilityToggle1.setImageResource(R.drawable.eye_closed) // Ganti dengan ikon mata tertutup
+            passwordVisibilityToggle1.setImageResource(R.drawable.eye_closed) // Closed eye icon
         }
-        // Pindahkan kursor ke akhir teks
+        // Move cursor to end of text
         passwordEditText.setSelection(passwordEditText.text.length)
     }
 
+    // Login user with email and password
     private fun loginUser(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Login berhasil, pindah ke MainActivity
+                    // Login successful, navigate to BerandaActivity
                     Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, MainActivity::class.java)
+                    val intent = Intent(this, BerandaActivity::class.java)
                     startActivity(intent)
-                    finish()
+                    finish() // Close LoginActivity to prevent back navigation
                 } else {
-                    // Login gagal
+                    // Login failed
                     Toast.makeText(
                         this,
                         "Login failed: ${task.exception?.message}",
@@ -101,9 +104,9 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
-    // Fungsi validasi untuk input email dan password
+    // Validate email and password inputs
     private fun validateInput(email: String, password: String): Boolean {
-        val passwordPattern = Regex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{6}\$")
+        val passwordPattern = Regex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{6,}\$")
 
         return when {
             email.isEmpty() -> {
@@ -126,7 +129,7 @@ class LoginActivity : AppCompatActivity() {
 
             !password.matches(passwordPattern) -> {
                 passwordEditText.error =
-                    "Password must contain uppercase, lowercase, number, special character, and be 6 characters long"
+                    "Password must contain uppercase, lowercase, number, special character, and be at least 6 characters long"
                 passwordEditText.requestFocus()
                 false
             }
