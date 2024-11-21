@@ -21,7 +21,7 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_edit_profile)
+        setContentView(R.layout.activity_profile_settings)
 
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()

@@ -6,6 +6,19 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+    <string name="profile_icon_description">Profile Icon</string>
+    <string name="avatar_description">Avatar Image</string>
+    <string name="avatar1_description">Avatar 1</string>
+    <string name="avatar2_description">Avatar 2</string>
+    <string name="avatar3_description">Avatar 3</string>
+    <string name="avatar4_description">Avatar 4</string>
+    <string name="avatar5_description">Avatar 5</string>
+    <string name="avatar6_description">Avatar 6</string>
+    <string name="avatar7_description">Avatar 7</string>
+    <string name="avatar8_description">Avatar 8</string>
+    <string name="avatar9_description">Avatar 9</string>
+    <string name="avatar10_description">Avatar 10</string>
+    <string name="avatar11_description">Avatar 11</string>
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus

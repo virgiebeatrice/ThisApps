@@ -82,7 +82,7 @@ class SignupActivity : AppCompatActivity() {
                         saveUserDataToFirestore(it, user)
                     }
                 } else {
-                    showToast("Sign Up failed: ${task.exception?.message}")
+                    showToast("Pendaftaran gagal: ${task.exception?.message}")
                 }
             }
     }
@@ -90,14 +90,14 @@ class SignupActivity : AppCompatActivity() {
     private fun saveUserDataToFirestore(userId: String, user: Map<String, String>) {
         db.collection("users").document(userId).set(user)
             .addOnSuccessListener {
-                showToast("Sign Up successful")
+                showToast("Pendaftaran berhasil")
                 // Pindah ke halaman login setelah sign up sukses
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
                 finish() // menutup SignupActivity
             }
             .addOnFailureListener { e ->
-                showToast("Failed to save user data: ${e.message}")
+                showToast("Gagal menyimpan data pengguna: ${e.message}")
             }
     }
 
@@ -106,23 +106,23 @@ class SignupActivity : AppCompatActivity() {
 
         return when {
             username.isEmpty() -> {
-                usernameEditText.error = "Username is required"
+                usernameEditText.error = "Username diperlukan"
                 false
             }
             email.isEmpty() -> {
-                emailEditText.error = "Email is required"
+                emailEditText.error = "Email diperlukan"
                 false
             }
             !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
-                emailEditText.error = "Please enter a valid email"
+                emailEditText.error = "Masukkan email yang valid"
                 false
             }
             password.isEmpty() -> {
-                passwordEditText.error = "Password is required"
+                passwordEditText.error = "Password diperlukan"
                 false
             }
             !password.matches(passwordPattern) -> {
-                passwordEditText.error = "Password must contain uppercase, lowercase, number, special character, and be 6 characters long"
+                passwordEditText.error = "Password harus mengandung huruf besar, huruf kecil, angka, karakter spesial, dan panjang 6 karakter"
                 false
             }
             else -> true

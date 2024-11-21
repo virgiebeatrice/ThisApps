@@ -25,18 +25,40 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/textView14"
+            android:layout_width="246dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.303"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+        <TextView
             android:id="@+id/textView8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="24dp"
             android:fontFamily="@font/urbanist_bold"
             android:text="@string/e_mail"
             android:textColor="@color/black"
             android:textSize="23sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.145"
+            app:layout_constraintHorizontal_bias="0.151"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
+            app:layout_constraintTop_toBottomOf="@+id/textView14" />
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="246dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="16dp"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.321"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayout2"
@@ -44,17 +66,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.491"
+            app:layout_constraintHorizontal_bias="0.514"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView5">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="310sp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/dmsans"
-                android:hint="@string/your_name"
-                android:textSize="18sp" />
-        </com.google.android.material.textfield.TextInputLayout>
+            app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayout"
@@ -64,21 +78,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.524"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView8">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="310dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/dmsans"
-                android:hint="@string/example_gmail_com"
-                android:textSize="18sp" />
-        </com.google.android.material.textfield.TextInputLayout>
+            app:layout_constraintTop_toBottomOf="@+id/textView8"/>
 
         <TextView
             android:id="@+id/textView10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="20dp"
             android:fontFamily="@font/urbanist_bold"
             android:text="PIN"
             android:textColor="@color/black"
@@ -86,19 +92,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.132"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/textView15" />
 
         <TextView
             android:id="@+id/textView12"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="36dp"
             android:fontFamily="@font/urbanist_bold"
             android:text="@string/avatar"
             android:textColor="@color/black"
             android:textSize="23sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.156"
+            app:layout_constraintHorizontal_bias="0.153"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView13" />
 
@@ -106,13 +112,13 @@
             android:id="@+id/textView11"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:fontFamily="@font/urbanist_bold"
             android:text="Pick Your Avatar"
             android:textColor="@color/black"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.467"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
@@ -120,13 +126,12 @@
             android:id="@+id/textView13"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="24dp"
             android:fontFamily="@font/urbanist_bold"
             android:text="@string/make_your_pin_safety"
             android:textColor="@color/black"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.452"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout3" />
 
@@ -149,149 +154,152 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Avatar Buttons -->
+
         <ImageButton
             android:id="@+id/Avatar1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/avatar1_description"
             android:src="@drawable/avatar"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.176"
+            app:layout_constraintHorizontal_bias="0.167"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView11" />
+            app:layout_constraintTop_toBottomOf="@+id/textView11"
+            tools:ignore="MissingConstraints" />
 
         <ImageButton
             android:id="@+id/Avatar2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/avatar2_description"
             android:src="@drawable/avatar2"
-            tools:layout_editor_absoluteX="159dp"
-            tools:layout_editor_absoluteY="537dp"
-            tools:ignore="MissingConstraints" />
+            app:layout_constraintStart_toEndOf="@+id/Avatar1"
+            app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
         <ImageButton
             android:id="@+id/Avatar3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/avatar3_description"
             android:src="@drawable/avatar3"
-            android:contentDescription="Avatar 3"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.839"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="536dp"
-            tools:ignore="MissingConstraints" />
-
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/Avatar2"
+            app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
         <ImageButton
             android:id="@+id/Avatar4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="52dp"
+            android:layout_marginTop="16dp"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/avatar4_description"
             android:src="@drawable/avatar4"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.176"
             app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="648dp"
-            tools:ignore="MissingConstraints" />
+            app:layout_constraintTop_toBottomOf="@+id/Avatar1" />
 
         <ImageButton
             android:id="@+id/Avatar5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="16dp"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/avatar5_description"
             android:src="@drawable/avatar5"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.504"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="650dp"
-            tools:ignore="MissingConstraints" />
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/Avatar4"
+            app:layout_constraintTop_toBottomOf="@+id/Avatar1" />
 
         <ImageButton
             android:id="@+id/Avatar6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/avatar6_description"
             android:src="@drawable/avatar6"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.848"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="649dp"
-            tools:ignore="MissingConstraints" />
+            app:layout_constraintHorizontal_bias="0.163"
+            app:layout_constraintStart_toEndOf="@+id/Avatar5"
+            app:layout_constraintTop_toBottomOf="@+id/Avatar3" />
 
         <ImageButton
             android:id="@+id/Avatar7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/avatar7_description"
             android:src="@drawable/avatar7"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.176"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="759dp"
+            app:layout_constraintStart_toEndOf="@+id/Avatar9"
+            app:layout_constraintTop_toBottomOf="@+id/Avatar5"
             tools:ignore="MissingConstraints" />
 
         <ImageButton
             android:id="@+id/Avatar8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/avatar8_description"
             android:src="@drawable/avatar8"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.504"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="758dp"
-            tools:ignore="MissingConstraints" />
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/Avatar10"
+            app:layout_constraintTop_toBottomOf="@+id/Avatar11" />
 
         <ImageButton
             android:id="@+id/Avatar9"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="52dp"
+            android:layout_marginTop="12dp"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/avatar9_description"
             android:src="@drawable/avatar9"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.848"
             app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="758dp"
+            app:layout_constraintTop_toBottomOf="@+id/Avatar4"
             tools:ignore="MissingConstraints" />
 
         <ImageButton
             android:id="@+id/Avatar10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="160dp"
+            android:layout_marginTop="12dp"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/avatar10_description"
             android:src="@drawable/avatar10"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.176"
             app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="866dp"
-            tools:ignore="MissingConstraints" />
+            app:layout_constraintTop_toBottomOf="@+id/Avatar7" />
 
         <ImageButton
             android:id="@+id/Avatar11"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="13dp"
+            android:layout_marginTop="12dp"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/avatar11_description"
             android:src="@drawable/avatar11"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.839"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="867dp"
-            tools:ignore="MissingConstraints" />
-
-        <ImageButton
-            android:id="@+id/Avatar12"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/avatar12"
-            android:contentDescription="Avatar 12"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.839"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="867dp"
+            app:layout_constraintHorizontal_bias="0.019"
+            app:layout_constraintStart_toEndOf="@+id/Avatar7"
+            app:layout_constraintTop_toBottomOf="@+id/Avatar6"
             tools:ignore="MissingConstraints" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
