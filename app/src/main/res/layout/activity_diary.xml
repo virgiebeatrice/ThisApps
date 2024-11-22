@@ -12,6 +12,7 @@
         android:layout_height="48dp"
         android:layout_marginTop="52dp"
         android:ems="10"
+        android:fontFamily="@font/dmsans"
         android:hint="Enter a date"
         android:inputType="date"
         app:layout_constraintEnd_toEndOf="parent"
@@ -42,7 +43,7 @@
         android:ems="10"
         android:fontFamily="@font/urbanist_bold"
         android:inputType="text"
-        android:text="@string/title"
+        android:hint="@string/title"
         android:textSize="29sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.328"
@@ -68,20 +69,21 @@
 
     <EditText
         android:id="@+id/editTextIsi"
-        android:layout_width="411dp"
-        android:layout_height="512dp"
+        android:layout_width="360dp"
+        android:layout_height="490dp"
         android:layout_marginTop="16dp"
         android:background="@android:color/white"
         android:gravity="top"
         android:hint="Write your content here"
         android:inputType="textMultiLine"
-        android:padding="8dp"
+        android:padding="15dp"
+        android:fontFamily="@font/dmsans"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextText"
-        app:layout_constraintVertical_bias="0.022" />
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
