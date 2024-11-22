@@ -1,5 +1,6 @@
 package com.example.thisapp
 
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -8,6 +9,7 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.Calendar
 
 class DiaryActivity : AppCompatActivity() {
     private lateinit var firestore: FirebaseFirestore
@@ -30,6 +32,11 @@ class DiaryActivity : AppCompatActivity() {
         val editTextDate: EditText = findViewById(R.id.editTextDate2)
         val editTextTitle: EditText = findViewById(R.id.editTextText)
         val editTextisi: EditText = findViewById(R.id.editTextIsi)
+
+        // Tambahkan listener untuk membuka kalender
+        editTextDate.setOnClickListener {
+            showDatePickerDialog(editTextDate)
+        }
 
         textButton.setOnClickListener {
             // Ambil data dari input
@@ -62,6 +69,31 @@ class DiaryActivity : AppCompatActivity() {
                 .addOnFailureListener { e ->
                     Toast.makeText(this, "Gagal menyimpan: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
+
+
+
         }
+    }
+
+    // Fungsi untuk menampilkan DatePickerDialog
+    private fun showDatePickerDialog(editText: EditText) {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(
+            this,
+            { _, selectedYear, selectedMonth, selectedDay ->
+                // Set tanggal ke format yyyy-MM-dd
+                val formattedDate = String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay)
+                editText.setText(formattedDate)
+            },
+            year,
+            month,
+            day
+        )
+
+        datePickerDialog.show()
     }
 }
