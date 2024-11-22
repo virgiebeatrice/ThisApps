@@ -1,0 +1,139 @@
+[33mcommit ebbf2e36fef03cb97712383869bafdaef0d38a02[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdiary[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/diary[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: 6f85c5a 728b40f
+Author: nlisfra <114545152+nlisfra@users.noreply.github.com>
+Date:   Thu Nov 21 20:56:06 2024 +0700
+
+    Merge pull request #8 from virgiebeatrice/diary
+    
+    Diary
+
+[33mcommit 728b40f144417f6ed207eb1d1d9ca39acd5d107f[m
+Author: nlisfra <nailisafira2004@gmail.com>
+Date:   Thu Nov 21 20:52:31 2024 +0700
+
+    diary isi
+
+[33mcommit 91e929cdbf1154e90c0290a3ac43836a4a50571e[m
+Merge: b7739d6 6f85c5a
+Author: nlisfra <nailisafira2004@gmail.com>
+Date:   Thu Nov 21 20:19:04 2024 +0700
+
+    git baru lagi diarynya dan setting profile
+
+[33mcommit 6f85c5a22a913658878442aa0bb73f80f21ca75e[m
+Merge: 0d175c7 6e3d400
+Author: nlisfra <114545152+nlisfra@users.noreply.github.com>
+Date:   Thu Nov 21 18:17:26 2024 +0700
+
+    Merge pull request #7 from virgiebeatrice/diary
+    
+    Merge pull request #6 from virgiebeatrice/master
+
+[33mcommit b7739d644e060a48e9aa04326e6b3ce28ea4a81d[m
+Author: nlisfra <nailisafira2004@gmail.com>
+Date:   Thu Nov 21 18:16:53 2024 +0700
+
+    tambahan diary dan settings profile
+
+[33mcommit 6e3d400c31d3591488885bacb201393c4422e9bc[m
+Merge: 5c5669e 0d175c7
+Author: nlisfra <114545152+nlisfra@users.noreply.github.com>
+Date:   Thu Nov 21 18:14:59 2024 +0700
+
+    Merge pull request #6 from virgiebeatrice/master
+    
+    Merge pull request #5 from virgiebeatrice/diary
+
+[33mcommit 0d175c761170fd6cb621b5daaa0851a2ef727f00[m
+Merge: a07ff77 5c5669e
+Author: DewiRagil091 <117187904+DewiRagil091@users.noreply.github.com>
+Date:   Thu Nov 21 12:10:57 2024 +0700
+
+    Merge pull request #5 from virgiebeatrice/diary
+    
+    Isi Diary
+
+[33mcommit 5c5669e9e7b62e3ec1ffe4327fabb0ad3e983b0f[m
+Author: DewiRagil091 <117187904+DewiRagil091@users.noreply.github.com>
+Date:   Thu Nov 21 12:10:11 2024 +0700
+
+    Isi Diary
+
+[33mcommit a07ff7796d9070282d1477f58c0982f64e81b209[m
+Merge: e040e5f 2cdfeae
+Author: nirmalaaa <114602285+nirmalaaa@users.noreply.github.com>
+Date:   Sat Nov 16 17:30:13 2024 +0700
+
+    Merge pull request #4 from virgiebeatrice/diary
+    
+    Fitur Diary
+
+[33mcommit 2cdfeaec16e0b4f595de61911a301555ed7596fb[m
+Author: nirmala <nirmalasilalahi8@gmail.com>
+Date:   Sat Nov 16 17:29:38 2024 +0700
+
+    Fitur Diary
+
+[33mcommit e040e5f122625f65870e1dddd3ce4c98dcd17961[m
+Merge: 491ae08 68251ce
+Author: nlisfra <114545152+nlisfra@users.noreply.github.com>
+Date:   Wed Nov 13 23:18:20 2024 +0700
+
+    Merge pull request #3 from virgiebeatrice/register
+    
+    perubahan login
+
+[33mcommit 68251ce12c4c12e32cac10f232e1da5339a97f44[m[33m ([m[1;31morigin/register[m[33m)[m
+Merge: 3c8dc0a 491ae08
+Author: nlisfra <114545152+nlisfra@users.noreply.github.com>
+Date:   Wed Nov 13 23:17:41 2024 +0700
+
+    Merge branch 'master' into register
+
+[33mcommit 3c8dc0ad5c5037369d7a07700dfa9e3666d7850f[m
+Author: nlisfra <nailisafira2004@gmail.com>
+Date:   Wed Nov 13 23:07:11 2024 +0700
+
+    perubahan login
+
+[33mcommit 491ae08ad64284f3862f1fd0dea99542468e4146[m
+Merge: 0df2f7e c113422
+Author: Virgie Beatrice <115799880+virgiebeatrice@users.noreply.github.com>
+Date:   Wed Nov 13 17:40:30 2024 +0700
+
+    Merge pull request #2 from virgiebeatrice/kalender
+    
+    Update UI Kalender
+
+[33mcommit c113422a9d94a1062a8abecd9e191ab8ca79192c[m[33m ([m[1;31morigin/kalender[m[33m)[m
+Author: syifa2308 <khairunisasyifa08@gmail.com>
+Date:   Wed Nov 13 15:23:42 2024 +0700
+
+    update UI kalender
+
+[33mcommit 0df2f7ec9fb2d1adf71375c8c903791dda33cb94[m
+Merge: d3eb26e 2ca5b0d
+Author: Virgie Beatrice <115799880+virgiebeatrice@users.noreply.github.com>
+Date:   Mon Nov 11 09:58:08 2024 +0700
+
+    Merge pull request #1 from virgiebeatrice/register
+    
+    connect firestore
+
+[33mcommit 2ca5b0d7a834da0a9e0753426f05e9e458ac49da[m
+Author: virgiebeatrice <virgielimbong@gmail.com>
+Date:   Mon Nov 11 09:56:59 2024 +0700
+
+    connect firestore
+
+[33mcommit d3eb26e8ca19fe608f92a755d3b3ee2c7dd96be0[m
+Author: virgiebeatrice <virgielimbong@gmail.com>
+Date:   Thu Nov 7 13:00:52 2024 +0700
+
+    add: first commit real
+
+[33mcommit 7433e70e97f724a496a2e9067a4a1007f8e37876[m
+Author: VirgieBeatrice <virgielimbong@gmail.com>
+Date:   Thu Nov 7 12:54:26 2024 +0700
+
+    add: first commit
