@@ -2,17 +2,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.thisapp.MainActivity">
+
     <item
         android:id="@+id/action_home"
         android:icon="@drawable/home"
         android:contentDescription="@string/home"
         android:title="@string/home"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom"
+        app:itemIconTint="@android:color/white"
+        app:itemTextColor="@android:color/white"/>
 
     <item
         android:id="@+id/action_profile"
         android:icon="@drawable/female"
         android:contentDescription="@string/profile"
         android:title="@string/profile"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom"
+        app:itemIconTint="@android:color/white"
+        app:itemTextColor="@android:color/white"/>
 </menu>

@@ -37,6 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:text="February 28, 2024"
+            android:fontFamily="@font/dmsans"
             android:textColor="@android:color/black"
             android:textSize="16sp"
             app:layout_constraintEnd_toStartOf="@id/profile_icon"
@@ -53,6 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:text="Hello, [Name]"
+            android:fontFamily="@font/urbanist_bold"
             android:textColor="@android:color/black"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -66,6 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:paddingBottom="25dp"
+            android:fontFamily="@font/dmsans"
             android:text="Today is your good day :D"
             android:textColor="@android:color/black"
             android:textSize="20sp"
@@ -73,51 +76,43 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/greeting_text" />
 
-        <View
-            android:id="@+id/circle_background"
-            android:layout_width="279dp"
-            android:layout_height="273dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/ic_circle_mood"
-            android:backgroundTint="@color/yellow"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/subtitle_text" />
-
         <ImageView
             android:id="@+id/smiley_emoticon"
-            android:layout_width="216dp"
-            android:layout_height="210dp"
-            android:src="@drawable/ic_smiley"
-            app:layout_constraintBottom_toBottomOf="@id/circle_background"
-            app:layout_constraintEnd_toEndOf="@id/circle_background"
-            app:layout_constraintStart_toStartOf="@id/circle_background"
-            app:layout_constraintTop_toTopOf="@id/circle_background" />
+            android:layout_width="316dp"
+            android:layout_height="316dp"
+            android:src="@drawable/satu"
+            app:layout_constraintBottom_toTopOf="@+id/joy_percentage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.494"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/subtitle_text"
+            app:layout_constraintVertical_bias="0.439" />
 
         <TextView
             android:id="@+id/joy_percentage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:text="83% Joy"
+            android:layout_marginTop="372dp"
+            android:fontFamily="@font/urbanist_bold"
+            android:text="Glad to see you happy"
             android:textColor="@android:color/black"
-            android:textSize="35sp"
+            android:textSize="25sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintHorizontal_bias="0.496"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/circle_background" />
+            app:layout_constraintTop_toBottomOf="@+id/subtitle_text" />
 
         <TextView
             android:id="@+id/tell_about_you"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/dmsans"
             android:paddingBottom="5dp"
             android:text="Tell me about your day"
             android:textColor="@android:color/black"
             android:textSize="20sp"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
@@ -125,21 +120,24 @@
 
         <Button
             android:id="@+id/write_diary_button"
-            android:layout_width="394dp"
+            android:layout_width="204dp"
             android:layout_height="48dp"
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/yellow"
             android:elevation="8dp"
+            android:fontFamily="@font/urbanist_bold"
             android:gravity="center"
             android:outlineSpotShadowColor="#FFFF00"
             android:padding="8dp"
             android:stateListAnimator="@null"
             android:text="Write a diary"
             android:textColor="@android:color/black"
-            android:textSize="18sp"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.507"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tell_about_you" />
+            app:layout_constraintTop_toBottomOf="@id/tell_about_you"
+            app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
