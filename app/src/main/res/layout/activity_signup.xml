@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
+    >
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/editText"
@@ -81,6 +83,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="440dp"
         android:fontFamily="@font/space_bold"
+        android:backgroundTint="@color/white"
         android:text="SIGN UP"
         android:textColor="@color/yellow"
         android:textSize="20sp"
@@ -97,6 +100,7 @@
         android:fontFamily="@font/space_bold"
         android:text="LOG IN"
         android:textColor="@color/yellow"
+        android:backgroundTint="@color/white"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

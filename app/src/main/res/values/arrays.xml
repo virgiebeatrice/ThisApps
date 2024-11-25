@@ -1,0 +1,9 @@
+<resources>
+    <array name="gradient_colors">
+        <item>#E4FFCA</item>
+        <item>#FFF5C3</item>
+        <item>#FBD2D7</item>
+        <item>#F8C6A2</item>
+        <item>#E1C6F5</item>
+    </array>
+</resources>
