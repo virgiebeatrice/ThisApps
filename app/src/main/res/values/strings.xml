@@ -1,12 +1,25 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">THIS</string>
     <string name="action_settings">Settings</string>
-    <!-- Strings used for fragments for navigation -->
+
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="profile_icon_description">Profile Icon</string>
+
+    <string name="user_name">Name</string>
+    <string name="name_hint">Enter your name</string>
+
+    <string name="user_email">Email</string>
+    <string name="email_hint">Enter your email</string>
+
+    <string name="user_pin">Enter your PIN</string>
+    <string name="your_name">Your Name</string>
+    <string name="name">Name</string>
+    <string name="e_mail">Email</string>
+    <string name="avatar">Avatar</string>
+
     <string name="avatar_description">Avatar Image</string>
     <string name="avatar1_description">Avatar 1</string>
     <string name="avatar2_description">Avatar 2</string>
@@ -64,13 +77,16 @@
     <string name="username">Username</string>
     <string name="done">Done</string>
     <string name="title">Title</string>
-    <string name="name">Name</string>
-    <string name="your_name">Your Name</string>
-    <string name="e_mail">E-mail</string>
+
+    <string name="user_name_hint">Your Name</string>
+    <string name="user_email_hint">E-mail</string>
+
     <string name="example_gmail_com">example@gmail.com</string>
     <string name="pin">****</string>
     <string name="make_your_pin_safety">Make Your PIN Safety</string>
-    <string name="avatar">Avatar</string>
+
+    <string name="user_avatar">Avatar</string>
+
     <string name="password">Password</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
