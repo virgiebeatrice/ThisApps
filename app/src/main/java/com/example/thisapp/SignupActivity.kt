@@ -33,7 +33,7 @@ class SignupActivity : AppCompatActivity() {
         usernameEditText = findViewById(R.id.editText)
         emailEditText = findViewById(R.id.textInputEditText)
         passwordEditText = findViewById(R.id.editText2)
-        passwordVisibilityToggle = findViewById(R.id.passwordVisibilityToggle) // Menghubungkan ImageView untuk toggle
+        passwordVisibilityToggle = findViewById(R.id.passwordVisibilityToggle)
         signUpButton = findViewById(R.id.signupButton)
         loginButton = findViewById(R.id.loginButton)
 
@@ -90,16 +90,24 @@ class SignupActivity : AppCompatActivity() {
     private fun saveUserDataToFirestore(userId: String, user: Map<String, String>) {
         db.collection("users").document(userId).set(user)
             .addOnSuccessListener {
+                // Simpan data ke SharedPreferences
+                val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+                val editor = sharedPreferences.edit()
+                editor.putString("username", user["username"])
+                editor.putString("email", user["email"])
+                editor.apply()
+
                 showToast("Pendaftaran berhasil")
                 // Pindah ke halaman login setelah sign up sukses
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
-                finish() // menutup SignupActivity
+                finish()
             }
             .addOnFailureListener { e ->
                 showToast("Gagal menyimpan data pengguna: ${e.message}")
             }
     }
+
 
     private fun validateInput(username: String, email: String, password: String): Boolean {
         val passwordPattern = Regex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{6}\$")
