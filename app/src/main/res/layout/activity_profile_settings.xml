@@ -95,18 +95,18 @@
             app:layout_constraintTop_toBottomOf="@+id/textView15" />
 
         <TextView
-            android:id="@+id/textView12"
+            android:id="@+id/avatarImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="41dp"
             android:fontFamily="@font/urbanist_bold"
             android:text="@string/avatar"
             android:textColor="@color/black"
             android:textSize="23sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.153"
+            app:layout_constraintHorizontal_bias="0.147"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView13" />
+            app:layout_constraintTop_toBottomOf="@+id/button" />
 
         <TextView
             android:id="@+id/textView11"
@@ -120,7 +120,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView12" />
+            app:layout_constraintTop_toBottomOf="@+id/avatarImageView" />
 
         <TextView
             android:id="@+id/textView13"
@@ -146,11 +146,15 @@
             app:layout_constraintTop_toBottomOf="@+id/textView10">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textpin"
                 android:layout_width="310dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/dmsans"
-                android:hint="@string/pin"
-                android:textSize="18dp" />
+                android:hint="Masukkan PIN (4 angka)"
+                android:inputType="number"
+                android:maxLength="4"
+                android:textSize="18dp"
+                tools:ignore="InvalidId" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -301,6 +305,16 @@
             app:layout_constraintStart_toEndOf="@+id/Avatar7"
             app:layout_constraintTop_toBottomOf="@+id/Avatar6"
             tools:ignore="MissingConstraints" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="27dp"
+            android:text="Save PIN"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView13" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

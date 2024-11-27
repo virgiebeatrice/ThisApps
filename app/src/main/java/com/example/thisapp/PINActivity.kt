@@ -1,65 +1,51 @@
 package com.example.thisapp
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.KeyEvent
+import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 
 class PINActivity : AppCompatActivity() {
+
+    private lateinit var pin1: EditText
+    private lateinit var pin2: EditText
+    private lateinit var pin3: EditText
+    private lateinit var pin4: EditText
+    private lateinit var submitButton: Button
+
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pin)
 
-        // Sesuaikan padding untuk edge-to-edge
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.pin1)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        // Inisialisasi komponen UI
+        pin1 = findViewById(R.id.pin1)
+        pin2 = findViewById(R.id.pin2)
+        pin3 = findViewById(R.id.pin3)
+        pin4 = findViewById(R.id.pin4)
+        submitButton = findViewById(R.id.button)
 
-        // Setup PIN input logic
-        val pins = listOf(
-            findViewById<EditText>(R.id.pin1),
-            findViewById<EditText>(R.id.pin2),
-            findViewById<EditText>(R.id.pin3),
-            findViewById<EditText>(R.id.pin4)
-        )
+        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val storedPin = sharedPreferences.getString("pin", null)
 
-        setupPinInputs(pins)
-    }
+        submitButton.setOnClickListener {
+            // Gabungkan input PIN dari empat EditText
+            val enteredPin = pin1.text.toString().trim() +
+                    pin2.text.toString().trim() +
+                    pin3.text.toString().trim() +
+                    pin4.text.toString().trim()
 
-    private fun setupPinInputs(pins: List<EditText>) {
-        for (i in pins.indices) {
-            // Tambahkan TextWatcher untuk mendeteksi input
-            pins[i].addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (s?.length == 1) {
-                        if (i < pins.size - 1) {
-                            pins[i + 1].requestFocus()
-                        } else {
-                            pins[i].clearFocus()
-                        }
-                    } else if (s?.length ?: 0 > 1) {
-                        pins[i].setText(s?.subSequence(0, 1))
-                    }
-                }
-                override fun afterTextChanged(s: Editable?) {}
-            })
-
-            // Tambahkan listener untuk mendeteksi penghapusan
-            pins[i].setOnKeyListener { _, keyCode, event ->
-                if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL) {
-                    if (pins[i].text.isEmpty() && i > 0) {
-                        pins[i - 1].setText("")
-                        pins[i - 1].requestFocus()
-                    }
-                }
-                false
+            if (enteredPin == storedPin) {
+                // PIN benar, arahkan ke halaman beranda
+                val intent = Intent(this, BerandaActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                // PIN salah
+                Toast.makeText(this, "Incorrect PIN", Toast.LENGTH_SHORT).show()
             }
         }
     }

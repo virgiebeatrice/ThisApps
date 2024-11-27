@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
@@ -29,20 +30,20 @@ class DiaryActivity : AppCompatActivity() {
         }
 
         val textButton: Button = findViewById(R.id.textButton)
-        val editTextDate: EditText = findViewById(R.id.editTextDate2)
+        val textViewDate: TextView = findViewById(R.id.editTextDate2)
         val editTextTitle: EditText = findViewById(R.id.editTextText)
-        val editTextisi: EditText = findViewById(R.id.editTextIsi)
+        val editTextIsi: EditText = findViewById(R.id.editTextIsi)
 
-        // Tambahkan listener untuk membuka kalender
-        editTextDate.setOnClickListener {
-            showDatePickerDialog(editTextDate)
+        // Tambahkan listener untuk membuka kalender saat klik pada TextView
+        textViewDate.setOnClickListener {
+            showDatePickerDialog(textViewDate)
         }
 
         textButton.setOnClickListener {
             // Ambil data dari input
-            val date = editTextDate.text.toString()
+            val date = textViewDate.text.toString()
             val title = editTextTitle.text.toString()
-            val content = editTextisi.text.toString()
+            val content = editTextIsi.text.toString()
 
             // Validasi input
             if (date.isEmpty() || title.isEmpty() || content.isEmpty()) {
@@ -62,21 +63,23 @@ class DiaryActivity : AppCompatActivity() {
                 .addOnSuccessListener {
                     Toast.makeText(this, "Diary berhasil disimpan", Toast.LENGTH_SHORT).show()
                     // Bersihkan input setelah disimpan
-                    editTextDate.text.clear()
+                    textViewDate.text = "Select a date"
                     editTextTitle.text.clear()
-                    editTextisi.text.clear()
+                    editTextIsi.text.clear()
+
+                    val intent = Intent(this, HomePageActivity::class.java)
+                    startActivity(intent)
+                    finish()
                 }
+
                 .addOnFailureListener { e ->
                     Toast.makeText(this, "Gagal menyimpan: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
-
-
-
         }
     }
 
     // Fungsi untuk menampilkan DatePickerDialog
-    private fun showDatePickerDialog(editText: EditText) {
+    private fun showDatePickerDialog(textView: TextView) {
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH)
@@ -87,7 +90,7 @@ class DiaryActivity : AppCompatActivity() {
             { _, selectedYear, selectedMonth, selectedDay ->
                 // Set tanggal ke format yyyy-MM-dd
                 val formattedDate = String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay)
-                editText.setText(formattedDate)
+                textView.text = formattedDate // Tampilkan tanggal yang dipilih di TextView
             },
             year,
             month,

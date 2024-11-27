@@ -1,5 +1,6 @@
 package com.example.thisapp
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
@@ -9,7 +10,6 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 
 class LoginActivity : AppCompatActivity() {
 
@@ -19,15 +19,14 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var loginButton: Button
     private lateinit var signUpButton: Button
     private lateinit var auth: FirebaseAuth
-    private lateinit var db: FirebaseFirestore
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        // Initialize Firebase Auth and Firestore
+        // Initialize Firebase Auth
         auth = FirebaseAuth.getInstance()
-        db = FirebaseFirestore.getInstance()
 
         // Initialize views
         emailEditText = findViewById(R.id.editText)
@@ -89,11 +88,11 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Login successful, get user data
-                    val userId = auth.currentUser?.uid
-                    if (userId != null) {
-                        getUserDataFromFirestore(userId)
-                    }
+                    // Login successful, navigate to BerandaActivity
+                    Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, BerandaActivity::class.java)
+                    startActivity(intent)
+                    finish() // Close LoginActivity to prevent back navigation
                 } else {
                     // Login failed
                     Toast.makeText(
@@ -102,35 +101,6 @@ class LoginActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            }
-    }
-
-    // Get user data from Firestore
-    private fun getUserDataFromFirestore(userId: String) {
-        db.collection("users").document(userId).get()
-            .addOnSuccessListener { document ->
-                if (document.exists()) {
-                    val username = document.getString("username")
-                    val email = document.getString("email")
-
-                    // Save user data to SharedPreferences
-                    val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
-                    val editor = sharedPreferences.edit()
-                    editor.putString("username", username)
-                    editor.putString("email", email)
-                    editor.apply()
-
-                    // Navigate to BerandaActivity after login
-                    Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, BerandaActivity::class.java)
-                    startActivity(intent)
-                    finish() // Close LoginActivity to prevent back navigation
-                } else {
-                    Toast.makeText(this, "User data not found", Toast.LENGTH_SHORT).show()
-                }
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Error getting user data: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 

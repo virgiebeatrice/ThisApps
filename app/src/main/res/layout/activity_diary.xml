@@ -8,15 +8,18 @@
 
     <EditText
         android:id="@+id/editTextDate2"
-        android:layout_width="116dp"
+        android:layout_width="165dp"
         android:layout_height="48dp"
         android:layout_marginTop="52dp"
+        android:clickable="true"
         android:ems="10"
+        android:focusable="false"
         android:fontFamily="@font/dmsans"
-        android:hint="Enter a date"
-        android:inputType="date"
+        android:padding="10dp"
+        android:text="Select a date"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.335"
+        app:layout_constraintHorizontal_bias="0.398"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -61,10 +64,10 @@
         app:fabSize="mini"
         app:layout_constraintBottom_toTopOf="@+id/editTextText"
         app:layout_constraintEnd_toStartOf="@+id/editTextDate2"
-        app:layout_constraintHorizontal_bias="0.372"
+        app:layout_constraintHorizontal_bias="0.615"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.619"
+        app:layout_constraintVertical_bias="0.626"
         app:tint="@color/white" />
 
     <EditText
