@@ -13,10 +13,10 @@
         android:theme="@style/Theme.ThisApp"
         tools:targetApi="31">
         <activity
-            android:name=".PINActivity"
+            android:name=".ProfileSettings"
             android:exported="false" />
         <activity
-            android:name=".ProfileSettings"
+            android:name=".PINActivity"
             android:exported="false" />
         <activity
             android:name=".BerandaActivity"

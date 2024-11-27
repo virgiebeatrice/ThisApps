@@ -37,7 +37,7 @@ class SignupActivity : AppCompatActivity() {
         signUpButton = findViewById(R.id.signupButton)
         loginButton = findViewById(R.id.loginButton)
 
-        // Set OnClickListener untuk tombol Sign Up
+        // Tombol Sign Up
         signUpButton.setOnClickListener {
             val username = usernameEditText.text.toString().trim()
             val email = emailEditText.text.toString().trim()
@@ -48,23 +48,23 @@ class SignupActivity : AppCompatActivity() {
             }
         }
 
-        // Set OnClickListener untuk tombol Login, pindah ke halaman LoginActivity
+        // Tombol Login
         loginButton.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
         }
 
-        // Fungsi untuk toggle visibilitas password
+        // Toggle visibilitas password
         passwordVisibilityToggle.setOnClickListener {
-            if (passwordEditText.inputType == 129) { // Password visibility off
-                passwordEditText.inputType = 1 // Set input type to text
-                passwordVisibilityToggle.setImageResource(R.drawable.eye_open) // Ganti gambar mata
-            } else { // Password visibility on
-                passwordEditText.inputType = 129 // Set input type to password
-                passwordVisibilityToggle.setImageResource(R.drawable.eye_closed) // Ganti gambar mata
+            if (passwordEditText.inputType == 129) {
+                passwordEditText.inputType = 1
+                passwordVisibilityToggle.setImageResource(R.drawable.eye_open)
+            } else {
+                passwordEditText.inputType = 129
+                passwordVisibilityToggle.setImageResource(R.drawable.eye_closed)
             }
-            passwordEditText.setSelection(passwordEditText.text.length) // Agar posisi kursor tetap di akhir
+            passwordEditText.setSelection(passwordEditText.text.length)
         }
     }
 
@@ -88,17 +88,16 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun saveUserDataToFirestore(userId: String, user: Map<String, String>) {
-        db.collection("users").document(userId).set(user)
+        val email = user["email"] ?: return
+        db.collection("Users").document(email).set(user)
             .addOnSuccessListener {
-                // Simpan data ke SharedPreferences
                 val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
                 val editor = sharedPreferences.edit()
+                editor.putString("active_user_email", email)
                 editor.putString("username", user["username"])
-                editor.putString("email", user["email"])
                 editor.apply()
 
                 showToast("Pendaftaran berhasil")
-                // Pindah ke halaman login setelah sign up sukses
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
                 finish()
@@ -108,9 +107,8 @@ class SignupActivity : AppCompatActivity() {
             }
     }
 
-
     private fun validateInput(username: String, email: String, password: String): Boolean {
-        val passwordPattern = Regex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{6}\$")
+        val passwordPattern = Regex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{6,}\$")
 
         return when {
             username.isEmpty() -> {
@@ -130,7 +128,7 @@ class SignupActivity : AppCompatActivity() {
                 false
             }
             !password.matches(passwordPattern) -> {
-                passwordEditText.error = "Password harus mengandung huruf besar, huruf kecil, angka, karakter spesial, dan panjang 6 karakter"
+                passwordEditText.error = "Password harus mengandung huruf besar, huruf kecil, angka, karakter spesial, dan panjang minimal 6 karakter"
                 false
             }
             else -> true
