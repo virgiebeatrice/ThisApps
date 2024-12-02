@@ -55,6 +55,15 @@ dependencies {
     implementation("io.realm.kotlin:library-base:1.8.0")
     implementation(libs.firebase.firestore)
 
+    implementation ("androidx.camera:camera-core:1.4.0")
+    implementation ("androidx.camera:camera-camera2:1.4.0")
+    implementation ("androidx.camera:camera-lifecycle:1.4.0")
+    implementation ("androidx.camera:camera-view:1.4.0")
+    // Gunakan ML Kit dari Play Services
+    implementation(libs.play.services.mlkit.face.detection)
+    implementation ("com.google.guava:guava:32.1.2-android")
+    implementation("org.greenrobot:eventbus:3.3.1")
+
     //firebase
     implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
     implementation("com.google.firebase:firebase-auth")
