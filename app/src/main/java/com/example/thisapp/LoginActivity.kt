@@ -90,7 +90,7 @@ class LoginActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     // Login successful, navigate to BerandaActivity
                     Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, BerandaActivity::class.java)
+                    val intent = Intent(this, LandingPage::class.java)
                     startActivity(intent)
                     finish() // Close LoginActivity to prevent back navigation
                 } else {
