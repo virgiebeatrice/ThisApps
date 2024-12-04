@@ -12,15 +12,13 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.Face
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetectorOptions
+import kotlinx.coroutines.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-
 
 @OptIn(androidx.camera.core.ExperimentalGetImage::class)
 class MainActivity : AppCompatActivity() {
@@ -28,20 +26,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var previewView: PreviewView
     private lateinit var cameraExecutor: ExecutorService
     private var imageAnalyzer: ImageAnalysis? = null
-    private val firestore = FirebaseFirestore.getInstance()
     private var isMoodDetected = false // Flag untuk mencegah hasil berulang
-
-    // Buffer untuk stabilitas deteksi
-    private val smileProbabilities = mutableListOf<Float>()
-    private val leftEyeProbabilities = mutableListOf<Float>()
-    private val rightEyeProbabilities = mutableListOf<Float>()
+    private var coroutineScope = CoroutineScope(Dispatchers.Main) // Untuk penundaan proses
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         previewView = findViewById(R.id.previewView)
-        val floatingActionButton = findViewById<FloatingActionButton>(R.id.floatingActionButton)
 
         // Memeriksa izin kamera
         if (allPermissionsGranted()) {
@@ -50,13 +42,6 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
             )
-        }
-
-        floatingActionButton.setOnClickListener {
-            if (!isMoodDetected) { // Cek apakah mood sudah terdeteksi
-                Toast.makeText(this, "Detecting mood...", Toast.LENGTH_SHORT).show()
-                captureAndAnalyzeImage()
-            }
         }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -77,6 +62,11 @@ class MainActivity : AppCompatActivity() {
             imageAnalyzer = ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
+                .also { analyzer ->
+                    analyzer.setAnalyzer(cameraExecutor) { imageProxy ->
+                        processImage(imageProxy)
+                    }
+                }
 
             try {
                 cameraProvider.unbindAll()
@@ -90,69 +80,49 @@ class MainActivity : AppCompatActivity() {
     }
 
     @androidx.annotation.OptIn(ExperimentalGetImage::class)
-    private fun captureAndAnalyzeImage() {
-        imageAnalyzer?.setAnalyzer(cameraExecutor) { imageProxy ->
-            if (isMoodDetected) {
-                imageProxy.close()
-                return@setAnalyzer
-            }
+    private fun processImage(imageProxy: ImageProxy) {
+        if (isMoodDetected) {
+            imageProxy.close()
+            return
+        }
 
-            val mediaImage = imageProxy.image
-            if (mediaImage != null) {
-                val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+        val mediaImage = imageProxy.image
+        if (mediaImage != null) {
+            val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
 
-                val options = FaceDetectorOptions.Builder()
-                    .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
-                    .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
-                    .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
-                    .setMinFaceSize(0.1f) // Ukuran minimum wajah
-                    .enableTracking() // Melacak wajah untuk stabilitas
-                    .build()
+            val options = FaceDetectorOptions.Builder()
+                .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
+                .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
+                .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
+                .build()
 
-                val detector = FaceDetection.getClient(options)
+            val detector = FaceDetection.getClient(options)
 
-                detector.process(image)
-                    .addOnSuccessListener { faces ->
-                        if (faces.isNotEmpty()) {
-                            val face = faces[0]
-
-                            // Validasi ukuran bounding box
-                            val boundingBox = face.boundingBox
-                            if (boundingBox.width() < 100 || boundingBox.height() < 100) {
-                                runOnUiThread {
-                                    Toast.makeText(this, "Face too small, move closer to the camera.", Toast.LENGTH_SHORT).show()
-                                }
-                            } else {
-                                analyzeMood(face)
-                            }
-                        } else {
-                            runOnUiThread {
-                                Toast.makeText(this, "No face detected.", Toast.LENGTH_SHORT).show()
-                            }
+            detector.process(image)
+                .addOnSuccessListener { faces ->
+                    if (faces.isNotEmpty()) {
+                        // Tambahkan penundaan sebelum analisis mood selesai
+                        coroutineScope.launch {
+                            delay(100)
+                            analyzeMood(faces[0])
                         }
                     }
-                    .addOnFailureListener { e ->
-                        Log.e("FaceDetection", "Face detection failed", e)
-                    }
-                    .addOnCompleteListener {
-                        imageProxy.close()
-                    }
-            }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("FaceDetection", "Face detection failed", e)
+                }
+                .addOnCompleteListener {
+                    imageProxy.close()
+                }
         }
     }
 
     private fun analyzeMood(face: Face) {
-        if (isMoodDetected) return // Pastikan hasil hanya muncul sekali
+        if (isMoodDetected) return
 
-        // Tambahkan probabilitas ke buffer
-        addProbabilityToBuffer(smileProbabilities, face.smilingProbability ?: 0.0f)
-        addProbabilityToBuffer(leftEyeProbabilities, face.leftEyeOpenProbability ?: 0.0f)
-        addProbabilityToBuffer(rightEyeProbabilities, face.rightEyeOpenProbability ?: 0.0f)
-
-        // Hitung rata-rata probabilitas
-        val smileProb = calculateAverage(smileProbabilities)
-        val leftEyeOpenProb = calculateAverage(leftEyeProbabilities)
-        val rightEyeOpenProb = calculateAverage(rightEyeProbabilities)
+        val smileProb = face.smilingProbability ?: 0.0f
+        val leftEyeOpenProb = face.leftEyeOpenProbability ?: 0.0f
+        val rightEyeOpenProb = face.rightEyeOpenProbability ?: 0.0f
 
         val mood = when {
             smileProb >= 0.85 && leftEyeOpenProb >= 0.75 && rightEyeOpenProb >= 0.75 -> "Happy 😄"
@@ -163,38 +133,19 @@ class MainActivity : AppCompatActivity() {
             else -> "Neutral 😐"
         }
 
-        isMoodDetected = true // Set flag bahwa mood sudah terdeteksi
-        saveMoodToFirestore(mood)
+        isMoodDetected = true // Set flag agar proses berhenti
+        stopCamera() // Hentikan deteksi kamera
 
-        // Navigasi ke ResultActivity
+        // Navigasi ke BerandaActivity
         val intent = Intent(this, BerandaActivity::class.java)
         intent.putExtra("MOOD", mood)
         startActivity(intent)
+        finish() // Hentikan activity ini
     }
 
-    private fun saveMoodToFirestore(mood: String) {
-        val moodData = hashMapOf(
-            "mood" to mood,
-            "timestamp" to System.currentTimeMillis()
-        )
-
-        firestore.collection("moods")
-            .add(moodData)
-            .addOnSuccessListener {
-                Log.d("Firestore", "Mood saved successfully")
-            }
-            .addOnFailureListener { e ->
-                Log.e("Firestore", "Failed to save mood", e)
-            }
-    }
-
-    private fun addProbabilityToBuffer(probList: MutableList<Float>, value: Float) {
-        if (probList.size >= 5) probList.removeAt(0) // Batasi buffer hingga 5 nilai terakhir
-        probList.add(value)
-    }
-
-    private fun calculateAverage(probList: List<Float>): Float {
-        return if (probList.isNotEmpty()) probList.average().toFloat() else 0.0f
+    private fun stopCamera() {
+        imageAnalyzer?.clearAnalyzer() // Hentikan analyzer
+        cameraExecutor.shutdown() // Hentikan executor
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
@@ -217,7 +168,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        cameraExecutor.shutdown()
+        coroutineScope.cancel() // Hentikan coroutine jika activity dihancurkan
+        stopCamera()
     }
 
     companion object {

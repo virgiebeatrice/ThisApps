@@ -77,11 +77,11 @@
             app:layout_constraintTop_toBottomOf="@id/greeting_text" />
 
         <ImageView
-            android:id="@+id/smiley_emoticon"
+            android:id="@+id/moodImageView"
             android:layout_width="316dp"
             android:layout_height="316dp"
-            android:src="@drawable/satu"
-            app:layout_constraintBottom_toTopOf="@+id/joy_percentage"
+            android:src="@drawable/happy"
+            app:layout_constraintBottom_toTopOf="@+id/mood_word"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.494"
             app:layout_constraintStart_toStartOf="parent"
@@ -89,7 +89,7 @@
             app:layout_constraintVertical_bias="0.439" />
 
         <TextView
-            android:id="@+id/joy_percentage"
+            android:id="@+id/mood_word"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="372dp"
@@ -116,7 +116,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/joy_percentage" />
+            app:layout_constraintTop_toBottomOf="@id/mood_word" />
 
         <Button
             android:id="@+id/write_diary_button"
@@ -127,7 +127,7 @@
             android:elevation="8dp"
             android:fontFamily="@font/urbanist_bold"
             android:gravity="center"
-            android:outlineSpotShadowColor="#FFFF00"
+            android:outlineSpotShadowColor="@color/black"
             android:padding="8dp"
             android:stateListAnimator="@null"
             android:text="Write a diary"

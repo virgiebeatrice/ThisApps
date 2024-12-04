@@ -38,9 +38,6 @@ class GenderActivity : AppCompatActivity() {
             // Add logic for Male button click
         }
 
-        // Navigate to MainActivity when either button is clicked
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-        finish()
+
     }
 }
