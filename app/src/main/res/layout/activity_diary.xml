@@ -7,15 +7,15 @@
     android:background="#F9F9F9">
 
     <!-- Persegi (background) dari atas hingga title -->
-    <View
+    <FrameLayout
         android:id="@+id/backgroundRectangle"
         android:layout_width="0dp"
         android:layout_height="400dp"
-        android:background="@drawable/gradient_happy"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/editTextText" />
+        app:layout_constraintBottom_toTopOf="@id/editTextText"/>
 
     <EditText
         android:id="@+id/editTextDate2"
@@ -71,7 +71,7 @@
         android:layout_margin="10dp"
         android:contentDescription="Back Button"
         android:src="@drawable/ic_back"
-        app:backgroundTint="@color/purple_200"
+        app:backgroundTint="@color/black"
         app:fabSize="mini"
         app:layout_constraintBottom_toTopOf="@+id/editTextText"
         app:layout_constraintEnd_toStartOf="@+id/editTextDate2"
