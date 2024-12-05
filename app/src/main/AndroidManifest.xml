@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET" /> <!-- Features -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
@@ -19,37 +19,55 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ThisApp"
         tools:targetApi="31">
+
+        <!-- Splash Activity -->
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true" />
+
+        <!-- Pin Activity -->
+        <activity
+            android:name=".PinActivity"
+            android:exported="true"
+            android:launchMode="singleTask" />
+
+        <!-- Beranda Activity -->
+        <activity
+            android:name=".BerandaActivity"
+            android:exported="true"
+            android:launchMode="singleTask" />
+
+        <!-- Landing Page -->
         <activity
             android:name=".LandingPage"
             android:exported="false" />
+
+        <!-- Profile Settings -->
         <activity
             android:name=".ProfileSettings"
             android:exported="false" />
-        <activity
-            android:name=".PINActivity"
-            android:exported="false" />
-        <activity
-            android:name=".BerandaActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ScanMoodActivity"
-            android:exported="false" />
+
+        <!-- Home Page -->
         <activity
             android:name=".HomePageActivity"
             android:exported="false" />
+
+        <!-- Gender Activity -->
         <activity
             android:name=".GenderActivity"
             android:exported="false" />
+
+        <!-- Edit Profile -->
         <activity
             android:name=".EditProfileActivity"
             android:exported="false" />
+
+        <!-- Diary Activity -->
         <activity
             android:name=".DiaryActivity"
             android:exported="false" />
-        <activity
-            android:name=".CameraActivity"
-            android:exported="false"
-            android:theme="@style/Theme.ThisApp" /> <!-- Activity untuk Welcome -->
+
+        <!-- Welcome Activity -->
         <activity
             android:name=".WelcomeActivity"
             android:clearTaskOnLaunch="true"
@@ -58,21 +76,26 @@
             android:theme="@style/Theme.ThisApp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Activity untuk Sign Up -->
+        </activity>
+
+        <!-- Signup Activity -->
         <activity
             android:name=".SignupActivity"
-            android:exported="false" /> <!-- Activity untuk Login -->
+            android:exported="false" />
+
+        <!-- Login Activity -->
         <activity
             android:name=".LoginActivity"
             android:exported="false"
-            android:theme="@style/Theme.ThisApp" /> <!-- Activity untuk Main App -->
+            android:theme="@style/Theme.ThisApp" />
+
+        <!-- Main Activity -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.ThisApp" />
-    </application>
 
+    </application>
 </manifest>

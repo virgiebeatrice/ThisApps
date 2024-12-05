@@ -1,5 +1,6 @@
 package com.example.thisapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -37,6 +38,37 @@ class WelcomeActivity : AppCompatActivity() {
                 createDots(position)
             }
         })
+
+        // Set listener untuk melanjutkan ke halaman berikutnya (misal: LoginActivity atau PinActivity)
+        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+
+        // Update status pengguna menjadi bukan pengguna pertama kali
+        editor.putBoolean("isFirstTimeUser", false)
+        editor.apply()
+
+        // Simulasikan login otomatis atau kondisi lain setelah WelcomeActivity
+        val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
+        val isPinSet = sharedPreferences.getBoolean("isPinSet", false) // Cek apakah PIN sudah diatur
+
+        // Menentukan activity selanjutnya berdasarkan status login
+        if (isLoggedIn) {
+            if (isPinSet) {
+                // Jika sudah login dan PIN sudah diatur, arahkan ke PinActivity
+                val intent = Intent(this, PinActivity::class.java)
+                startActivity(intent)
+            } else {
+                // Jika sudah login tapi PIN belum diatur, arahkan ke PinActivity
+                val intent = Intent(this, PinActivity::class.java)
+                startActivity(intent)
+            }
+        } else {
+            // Jika belum login, arahkan ke LoginActivity
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
+
+        finish() // Tutup WelcomeActivity agar tidak bisa kembali ke sini
     }
 
     // Fungsi untuk mengupdate indikator dots
