@@ -88,8 +88,16 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Login successful, navigate to BerandaActivity
+                    // Login successful, navigate to LandingPage
                     Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
+
+                    val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+                    val editor = sharedPreferences.edit()
+                    editor.putBoolean("isLoggedIn", true) // Menyimpan status login
+                    editor.putBoolean("isFirstTimeUser", false) // Mengubah status pengguna dari pertama kali menjadi sudah login
+                    editor.apply()
+
+                    // Redirect to PinActivity or LandingPage
                     val intent = Intent(this, LandingPage::class.java)
                     startActivity(intent)
                     finish() // Close LoginActivity to prevent back navigation

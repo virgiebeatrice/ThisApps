@@ -16,6 +16,9 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.Face
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetectorOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -133,14 +136,45 @@ class MainActivity : AppCompatActivity() {
             else -> "Neutral 😐"
         }
 
-        isMoodDetected = true // Set flag agar proses berhenti
+        isMoodDetected = true
         stopCamera() // Hentikan deteksi kamera
 
-        // Navigasi ke BerandaActivity
-        val intent = Intent(this, BerandaActivity::class.java)
-        intent.putExtra("MOOD", mood)
-        startActivity(intent)
-        finish() // Hentikan activity ini
+        // Simpan ke Firestore dan navigasi
+        saveDetectedMoodToFirestore(mood) { success ->
+            if (success) {
+                val intent = Intent(this, BerandaActivity::class.java)
+                intent.putExtra("MOOD", mood)
+                startActivity(intent)
+                finish() // Akhiri MainActivity
+            } else {
+                Toast.makeText(this, "Failed to save mood. Please try again.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun saveDetectedMoodToFirestore(mood: String, callback: (Boolean) -> Unit) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId != null) {
+            val moodData = hashMapOf(
+                "mood" to mood,
+                "lastUpdated" to System.currentTimeMillis() // Menambahkan timestamp untuk update terakhir
+            )
+
+            FirebaseFirestore.getInstance().collection("users")
+                .document(userId)
+                .set(moodData, SetOptions.merge()) // Gunakan opsi merge
+                .addOnSuccessListener {
+                    Log.d("MainActivity", "Mood successfully saved!")
+                    callback(true)
+                }
+                .addOnFailureListener { e ->
+                    Log.e("MainActivity", "Failed to save mood: ${e.message}")
+                    callback(false)
+                }
+        } else {
+            Log.e("MainActivity", "User ID not found. Failed to save mood.")
+            callback(false)
+        }
     }
 
     private fun stopCamera() {
