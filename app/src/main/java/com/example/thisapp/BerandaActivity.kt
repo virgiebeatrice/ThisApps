@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
+import java.util.*
 
 class BerandaActivity : AppCompatActivity() {
 
@@ -23,12 +25,16 @@ class BerandaActivity : AppCompatActivity() {
         val moodWordTextView: TextView = findViewById(R.id.mood_word)
         val writeDiaryButton: Button = findViewById(R.id.write_diary_button)
         val profileIcon: ImageButton = findViewById(R.id.profile_icon)
+        val dateTextView: TextView = findViewById(R.id.date_text)
 
         // Set greeting
         setupGreeting(greetingTextView)
 
         // Tampilkan mood terakhir
         displayLastDetectedMood(moodImageView, subtitleTextView, moodWordTextView, writeDiaryButton)
+
+        val currentDate = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault()).format(Date())
+        dateTextView.text = currentDate
 
         // Tombol untuk menulis catatan
         writeDiaryButton.setOnClickListener {

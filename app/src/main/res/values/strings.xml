@@ -20,6 +20,11 @@
     <string name="e_mail">Email</string>
     <string name="avatar">Avatar</string>
 
+    <string name="choose_language">Choose Language</string>
+    <string name="english">English</string>
+    <string name="indonesian">Indonesia</string>
+
+
     <string name="avatar_description">Avatar Image</string>
     <string name="avatar1_description">Avatar 1</string>
     <string name="avatar2_description">Avatar 2</string>
