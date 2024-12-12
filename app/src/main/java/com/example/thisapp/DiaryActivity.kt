@@ -73,7 +73,6 @@ class DiaryActivity : AppCompatActivity() {
                 "title" to title,
                 "content" to content
             )
-
             firestore.collection("Diaries")
                 .add(diaryData)
                 .addOnSuccessListener {
@@ -83,9 +82,11 @@ class DiaryActivity : AppCompatActivity() {
                     editTextTitle.text.clear()
                     editTextIsi.text.clear()
 
-                    val intent = Intent(this, HomePageActivity::class.java)
+                    // Beralih ke halaman com.example.thisapp.DateHistoryActivity
+                    val intent = Intent(this, DateHistoryActivity::class.java)
+                    intent.putExtra("date", date) // Kirim tanggal jika diperlukan
                     startActivity(intent)
-                    finish()
+                    finish() // Tutup halaman ini
                 }
                 .addOnFailureListener { e ->
                     Toast.makeText(this, "Gagal menyimpan: ${e.message}", Toast.LENGTH_SHORT).show()
