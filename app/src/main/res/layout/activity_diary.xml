@@ -17,23 +17,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/editTextText"/>
 
-    <EditText
-        android:id="@+id/editTextDate2"
-        android:layout_width="165dp"
-        android:layout_height="48dp"
+    <!-- Tanggal Otomatis -->
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="52dp"
-        android:clickable="true"
-        android:ems="10"
-        android:focusable="false"
-        android:fontFamily="@font/dmsans"
         android:padding="10dp"
-        android:text="Select a date"
+        android:text="Tanggal Otomatis"
         android:textSize="16sp"
+        android:fontFamily="@font/dmsans"
+        android:background="@android:color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.398"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Tombol Done -->
     <Button
         android:id="@+id/textButton"
         style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -49,6 +49,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Judul Diary -->
     <EditText
         android:id="@+id/editTextText"
         android:layout_width="wrap_content"
@@ -62,8 +63,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.328"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextDate2" />
+        app:layout_constraintTop_toBottomOf="@id/tvDate" />
 
+    <!-- Floating Action Button -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floating_action_button"
         android:layout_width="wrap_content"
@@ -74,13 +76,14 @@
         app:backgroundTint="@color/black"
         app:fabSize="mini"
         app:layout_constraintBottom_toTopOf="@+id/editTextText"
-        app:layout_constraintEnd_toStartOf="@+id/editTextDate2"
+        app:layout_constraintEnd_toStartOf="@+id/tvDate"
         app:layout_constraintHorizontal_bias="0.615"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.626"
         app:tint="@color/white" />
 
+    <!-- Isi Diary -->
     <EditText
         android:id="@+id/editTextIsi"
         android:layout_width="360dp"

@@ -4,5 +4,6 @@ package com.example.thisapp
 data class DiaryEntry(
     val title: String,
     val date: String,
-    val snippet: String
+    val snippet: String,
+    val mood: String
 )

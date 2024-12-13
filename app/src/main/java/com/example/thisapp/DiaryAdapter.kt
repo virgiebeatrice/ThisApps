@@ -21,7 +21,19 @@ class DiaryAdapter(private val diaryEntries: List<DiaryEntry>) :
     override fun onBindViewHolder(holder: DiaryViewHolder, position: Int) {
         val diaryEntry = diaryEntries[position]
         holder.bind(diaryEntry) // Binding data to the view holder
+        // Atur background sesuai mood
+        val moodBackground = when (diaryEntry.mood) {
+            "Happy 😄" -> R.drawable.gradient_happy
+            "Sad 😢" -> R.drawable.gradient_sad
+            "Angry 😡" -> R.drawable.gradient_angry
+            "Scared 😨" -> R.drawable.gradient_scared
+            "Surprised 😲" -> R.drawable.gradient_surprised
+            else -> R.drawable.gradient_neutral
+        }
+        holder.itemView.setBackgroundResource(moodBackground)
+
     }
+
 
     // Returns the size of the data list
     override fun getItemCount(): Int = diaryEntries.size

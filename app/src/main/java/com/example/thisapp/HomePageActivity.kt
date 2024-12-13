@@ -120,7 +120,8 @@ class HomePageActivity : AppCompatActivity() {
                         for (document in documents) {
                             val title = document.getString("title") ?: "Tidak ada judul"
                             val content = document.getString("content") ?: "Konten kosong"
-                            historyList.add(DiaryEntry(date, title, content))
+                            val mood= document.getString("mood") ?: "mood kosong"
+                            historyList.add(DiaryEntry(date, title, content, mood))
                         }
                         historyAdapter.notifyDataSetChanged()  // Notify adapter to update the UI
                     }
