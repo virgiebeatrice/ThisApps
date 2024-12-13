@@ -3,59 +3,64 @@ package com.example.thisapp
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import java.util.Calendar  // Pastikan untuk mengimpor ini
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class DiaryActivity : AppCompatActivity() {
+
     private lateinit var firestore: FirebaseFirestore
     private lateinit var firebaseAuth: FirebaseAuth
-    private var userId: String? = null  // Menyimpan userId
+    private var userId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_diary)
 
         // Inisialisasi FirebaseAuth dan Firestore
-        firebaseAuth = FirebaseAuth.getInstance()  // Inisialisasi FirebaseAuth
-        firestore = FirebaseFirestore.getInstance()  // Inisialisasi Firestore
+        firebaseAuth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
 
-        // Ambil userId dari FirebaseAuth
+        // Ambil userId
         val currentUser = firebaseAuth.currentUser
-        userId = currentUser?.uid  // Ambil UID pengguna yang sedang login
+        userId = currentUser?.uid
 
         // Jika pengguna belum login, arahkan ke halaman login
         if (userId == null) {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
-            finish()  // Tutup DiaryActivity jika pengguna belum login
+            finish()
         }
 
+        // Inisialisasi komponen UI
+        val tvDate = findViewById<TextView>(R.id.tvDate)
         val backgroundRectangle: FrameLayout = findViewById(R.id.backgroundRectangle)
         val floatingActionButton: ImageButton = findViewById(R.id.floating_action_button)
         val textButton: Button = findViewById(R.id.textButton)
-        val textViewDate: TextView = findViewById(R.id.editTextDate2)
         val editTextTitle: EditText = findViewById(R.id.editTextText)
         val editTextIsi: EditText = findViewById(R.id.editTextIsi)
 
-        // Ambil mood dari Intent tanpa fallback
-        val mood = intent.getStringExtra("MOOD")
+        // Atur tanggal otomatis
+        val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        tvDate.text = currentDate
 
-        // Periksa apakah mood ada dan ganti background sesuai mood
-        if (mood != null) {
-            when (mood) {
-                "Happy 😄" -> backgroundRectangle.setBackgroundResource(R.drawable.gradient_happy)
-                "Sad 😢" -> backgroundRectangle.setBackgroundResource(R.drawable.gradient_sad)
-                "Angry 😡" -> backgroundRectangle.setBackgroundResource(R.drawable.gradient_angry)
-                "Scared 😨" -> backgroundRectangle.setBackgroundResource(R.drawable.gradient_scared)
-                "Surprised 😲" -> backgroundRectangle.setBackgroundResource(R.drawable.gradient_surprised)
-                else -> backgroundRectangle.setBackgroundResource(R.drawable.gradient_neutral)
-            }
-        } else {
-            // Jika mood tidak ada, bisa kosongkan atau beri default behavior lain
-            backgroundRectangle.setBackgroundResource(R.drawable.gradient_neutral)
+        // Ambil mood dari Intent dengan nilai default
+        val mood = intent.getStringExtra("MOOD") ?: "Neutral"
+
+        // Ganti background sesuai mood
+        when (mood) {
+            "Happy 😄" -> backgroundRectangle.setBackgroundResource(R.drawable.gradient_happy)
+            "Sad 😢" -> backgroundRectangle.setBackgroundResource(R.drawable.gradient_sad)
+            "Angry 😡" -> backgroundRectangle.setBackgroundResource(R.drawable.gradient_angry)
+            "Scared 😨" -> backgroundRectangle.setBackgroundResource(R.drawable.gradient_scared)
+            "Surprised 😲" -> backgroundRectangle.setBackgroundResource(R.drawable.gradient_surprised)
+            else -> backgroundRectangle.setBackgroundResource(R.drawable.gradient_neutral)
         }
 
         // Navigasi ke BerandaActivity
@@ -64,55 +69,52 @@ class DiaryActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Tambahkan listener untuk membuka kalender saat klik pada TextView
-        textViewDate.setOnClickListener {
-            showDatePickerDialog(textViewDate)
-        }
-
         // Tombol untuk menyimpan diary
         textButton.setOnClickListener {
-            // Ambil data dari input
-            val date = textViewDate.text.toString()
+            val date = tvDate.text.toString()
             val title = editTextTitle.text.toString()
             val content = editTextIsi.text.toString()
 
             // Validasi input
-            if (date.isEmpty() || title.isEmpty() || content.isEmpty()) {
+            if (title.isEmpty() || content.isEmpty()) {
                 Toast.makeText(this, "Harap isi semua kolom", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // Simpan data ke Firestore dengan userId
+            // Siapkan data diary untuk disimpan
             val diaryData = hashMapOf(
-                "userId" to userId,  // Menambahkan userId ke data diary
+                "userId" to userId,
                 "date" to date,
                 "title" to title,
-                "content" to content
+                "content" to content,
+                "mood" to mood
             )
+
+            // Simpan data ke Firestore
             firestore.collection("Diaries")
                 .add(diaryData)
                 .addOnSuccessListener {
                     Toast.makeText(this, "Diary berhasil disimpan", Toast.LENGTH_SHORT).show()
-                    // Bersihkan input setelah disimpan
-                    textViewDate.text = "Select a date"
+                    // Reset input setelah menyimpan
                     editTextTitle.text.clear()
                     editTextIsi.text.clear()
 
-                    // Beralih ke halaman DateHistoryActivity
+                    // Pindah ke DateHistoryActivity
                     val intent = Intent(this, DateHistoryActivity::class.java)
-                    intent.putExtra("date", date) // Kirim tanggal jika diperlukan
+                    intent.putExtra("date", date)
                     startActivity(intent)
-                    finish() // Tutup halaman ini
+                    finish()
                 }
                 .addOnFailureListener { e ->
                     Toast.makeText(this, "Gagal menyimpan: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Log.e("DiaryActivity", "Error saat menyimpan diary: ${e.message}")
                 }
         }
     }
 
     // Fungsi untuk menampilkan DatePickerDialog
     private fun showDatePickerDialog(textView: TextView) {
-        val calendar = Calendar.getInstance()  // Pastikan ini ada di sini
+        val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
@@ -120,15 +122,13 @@ class DiaryActivity : AppCompatActivity() {
         val datePickerDialog = DatePickerDialog(
             this,
             { _, selectedYear, selectedMonth, selectedDay ->
-                // Set tanggal ke format yyyy-MM-dd
                 val formattedDate = String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay)
-                textView.text = formattedDate // Tampilkan tanggal yang dipilih di TextView
+                textView.text = formattedDate
             },
             year,
             month,
             day
         )
-
         datePickerDialog.show()
     }
 }

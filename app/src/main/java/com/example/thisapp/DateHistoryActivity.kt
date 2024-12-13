@@ -2,6 +2,7 @@ package com.example.thisapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.CalendarView
 import android.widget.ImageView
@@ -96,10 +97,11 @@ class DateHistoryActivity : AppCompatActivity() {
                         for (document in documents) {
                             val title = document.getString("title") ?: "Tidak ada judul"
                             val content = document.getString("content") ?: "Konten kosong"
-                            historyList.add(DiaryEntry(date, title, content))
+                            val mood = document.getString("mood") ?: "Tidak ada mood"
+                            historyList.add(DiaryEntry(date, title, content, mood))
                         }
-                        historyAdapter.notifyDataSetChanged()  // Notify adapter to update the UI
-                    }
+                        Log.d("DateHistoryActivity", "HistoryList after loading: $historyList")
+                        historyAdapter.notifyDataSetChanged()}
                 }
                 .addOnFailureListener { exception ->
                     Toast.makeText(
