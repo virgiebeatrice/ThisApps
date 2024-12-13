@@ -25,11 +25,11 @@ class SignupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
 
-        // Inisialisasi Firebase Authentication dan Firestore
+        // Initialize Firebase Authentication and Firestore
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
-        // Inisialisasi elemen-elemen dari layout
+        // Initialize UI elements
         usernameEditText = findViewById(R.id.editText)
         emailEditText = findViewById(R.id.textInputEditText)
         passwordEditText = findViewById(R.id.editText2)
@@ -37,7 +37,7 @@ class SignupActivity : AppCompatActivity() {
         signUpButton = findViewById(R.id.signupButton)
         loginButton = findViewById(R.id.loginButton)
 
-        // Tombol Sign Up
+        // Sign up button click
         signUpButton.setOnClickListener {
             val username = usernameEditText.text.toString().trim()
             val email = emailEditText.text.toString().trim()
@@ -48,14 +48,14 @@ class SignupActivity : AppCompatActivity() {
             }
         }
 
-        // Tombol Login
+        // Login button click
         loginButton.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
         }
 
-        // Toggle visibilitas password
+        // Password visibility toggle
         passwordVisibilityToggle.setOnClickListener {
             if (passwordEditText.inputType == 129) {
                 passwordEditText.inputType = 1
@@ -72,39 +72,86 @@ class SignupActivity : AppCompatActivity() {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Jika registrasi berhasil, simpan data pengguna di Firestore
-                    val userId = auth.currentUser?.uid
-                    val user = hashMapOf(
-                        "username" to username,
-                        "email" to email
-                    )
-                    userId?.let {
-                        saveUserDataToFirestore(it, user)
-                    }
+                    // After registration is successful, log the user in
+                    loginUser(email, password)
                 } else {
                     showToast("Pendaftaran gagal: ${task.exception?.message}")
                 }
             }
     }
 
+    private fun loginUser(email: String, password: String) {
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Save the user's data to Firestore
+                    val userId = auth.currentUser?.uid
+                    val user = hashMapOf(
+                        "email" to email,
+                        "username" to usernameEditText.text.toString().trim()
+                    )
+                    if (userId != null) {
+                        saveUserDataToFirestore(userId, user)
+                    }
+                    // After saving user data, check the user's PIN status
+                    checkUserPinStatus(email)
+                } else {
+                    showToast("Login gagal: ${task.exception?.message}")
+                }
+            }
+    }
+
     private fun saveUserDataToFirestore(userId: String, user: Map<String, String>) {
         val email = user["email"] ?: return
-        db.collection("Users").document(email).set(user)
+        val emailForDocId = email.toLowerCase() // Make sure the email is lowercase to avoid any inconsistencies
+
+        db.collection("Users").document(emailForDocId) // Use email as document ID
+            .set(user)
             .addOnSuccessListener {
+                // Successfully saved user data, now proceed with login and PIN setup
                 val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
                 val editor = sharedPreferences.edit()
                 editor.putString("active_user_email", email)
                 editor.putString("username", user["username"])
+                editor.putBoolean("isLoggedIn", true) // Save login status
                 editor.apply()
 
                 showToast("Pendaftaran berhasil")
-                val intent = Intent(this, LoginActivity::class.java)
-                startActivity(intent)
-                finish()
             }
             .addOnFailureListener { e ->
                 showToast("Gagal menyimpan data pengguna: ${e.message}")
             }
+    }
+
+    private fun checkUserPinStatus(email: String) {
+        val firestore = FirebaseFirestore.getInstance()
+        firestore.collection("PIN")
+            .whereEqualTo("email", email.toLowerCase()) // Check email in the PIN collection
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (querySnapshot.isEmpty) {
+                    // If PIN is not set, navigate to PIN setup
+                    navigateToSetupPin()
+                } else {
+                    // If PIN is set, navigate to MainActivity
+                    navigateToLogin()
+                }
+            }
+            .addOnFailureListener { e ->
+                showToast("Gagal memeriksa status PIN: ${e.message}")
+            }
+    }
+
+    private fun navigateToSetupPin() {
+        val intent = Intent(this, SetupPinActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    private fun navigateToLogin() {
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun validateInput(username: String, email: String, password: String): Boolean {
@@ -137,11 +184,5 @@ class SignupActivity : AppCompatActivity() {
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun navigateToMainActivity() {
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-        finish()
     }
 }

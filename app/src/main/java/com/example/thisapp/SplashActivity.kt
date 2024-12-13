@@ -4,51 +4,58 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 
 class SplashActivity : AppCompatActivity() {
+
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Delay beberapa detik untuk menampilkan splash screen
+        auth = FirebaseAuth.getInstance()
+
+        // Delay for splash screen
         Handler(Looper.getMainLooper()).postDelayed({
             checkLoginState()
-        }, 2000) // 2 detik delay (bisa disesuaikan)
+        }, 2000) // 2 seconds delay
     }
 
     private fun checkLoginState() {
         val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
         val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
-        val isFirstTimeUser = sharedPreferences.getBoolean("isFirstTimeUser", true)
-        val isPinSet = sharedPreferences.getBoolean("isPinSet", false) // Cek apakah PIN sudah diatur
+        val isPinSet = sharedPreferences.getBoolean("isPinSet", false)
+        val currentUser = auth.currentUser
 
-        // Jika ini pertama kali aplikasi dijalankan, arahkan ke WelcomeActivity
-        if (isFirstTimeUser) {
-            // Setel flag isFirstTimeUser ke false untuk aplikasi selanjutnya
-            val editor = sharedPreferences.edit()
-            editor.putBoolean("isFirstTimeUser", false)
-            editor.apply()
+        Log.d("SplashActivity", "isLoggedIn: $isLoggedIn, isPinSet: $isPinSet, currentUser: $currentUser")
 
-            // Arahkan ke WelcomeActivity
-            val intent = Intent(this, WelcomeActivity::class.java)
-            startActivity(intent)
-        } else if (isLoggedIn) {
-            // Jika sudah login dan PIN sudah diatur, arahkan ke PinActivity
-            if (isPinSet) {
-                val intent = Intent(this, PinActivity::class.java)
-                startActivity(intent)
+        if (currentUser != null) {
+            if (isLoggedIn) {
+                // Check if the PIN is set
+                if (isPinSet) {
+                    // If user is logged in and PIN is set, navigate to PIN screen
+                    startActivity(Intent(this, PinActivity::class.java))
+                } else {
+                    // If user is logged in but PIN is not set, navigate to SetupPinActivity
+                    startActivity(Intent(this, SetupPinActivity::class.java))
+                }
             } else {
-                // Jika sudah login tapi PIN belum diatur, arahkan ke ProfileSettings
-                val intent = Intent(this, ProfileSettings::class.java)
-                startActivity(intent)
+                // If user is not logged in, navigate to LoginActivity
+                startActivity(Intent(this, LoginActivity::class.java))
             }
         } else {
-            // Jika belum login dan bukan pengguna baru, arahkan ke SignUp
-            val intent = Intent(this, SignupActivity::class.java)
-            startActivity(intent)
+            // If there is no current user (user not authenticated), navigate to LoginActivity
+            startActivity(Intent(this, LoginActivity::class.java))
         }
 
-        finish() // Tutup SplashActivity agar tidak bisa kembali ke sini
+        finish() // Close SplashActivity so that the user cannot navigate back to it
+    }
+
+    private fun navigateTo(destination: Class<*>) {
+        val intent = Intent(this, destination)
+        startActivity(intent)
+        finish() // Remove SplashActivity from the back stack
     }
 }
