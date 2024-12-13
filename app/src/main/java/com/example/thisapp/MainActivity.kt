@@ -12,16 +12,17 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.Face
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetectorOptions
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.Locale
 
 @OptIn(androidx.camera.core.ExperimentalGetImage::class)
 class MainActivity : AppCompatActivity() {
@@ -48,38 +49,63 @@ class MainActivity : AppCompatActivity() {
         }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
+
+        // Pastikan dokumen profil pengguna ada
+        val user = FirebaseAuth.getInstance().currentUser
+        user?.email?.let { createDefaultProfileIfNeeded(it) }
+    }
+
+    private fun createDefaultProfileIfNeeded(email: String) {
+        val userEmailLowerCase = email.toLowerCase(Locale.ROOT)
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("editprofile").document(userEmailLowerCase).get()
+            .addOnSuccessListener { document ->
+                if (!document.exists()) {
+                    val defaultProfile = hashMapOf("username" to "New User")
+                    db.collection("editprofile").document(userEmailLowerCase)
+                        .set(defaultProfile)
+                        .addOnSuccessListener {
+                            Log.d("MainActivity", "Default profile created for new user.")
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("MainActivity", "Error creating default profile: ${e.message}")
+                        }
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("MainActivity", "Error checking user profile: ${e.message}")
+            }
     }
 
     private fun startCamera() {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
-
-        cameraProviderFuture.addListener({
-            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-
-            val preview = Preview.Builder().build().also {
-                it.setSurfaceProvider(previewView.surfaceProvider)
-            }
-
-            val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
-
-            imageAnalyzer = ImageAnalysis.Builder()
-                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .build()
-                .also { analyzer ->
-                    analyzer.setAnalyzer(cameraExecutor) { imageProxy ->
-                        processImage(imageProxy)
-                    }
+        if (allPermissionsGranted()) {
+            val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+            cameraProviderFuture.addListener({
+                val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+                val preview = Preview.Builder().build().also {
+                    it.setSurfaceProvider(previewView.surfaceProvider)
                 }
+                val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
+                imageAnalyzer = ImageAnalysis.Builder()
+                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                    .build()
+                    .also { analyzer ->
+                        analyzer.setAnalyzer(cameraExecutor) { imageProxy ->
+                            processImage(imageProxy)
+                        }
+                    }
 
-            try {
-                cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageAnalyzer
-                )
-            } catch (exc: Exception) {
-                Log.e("CameraX", "Use case binding failed", exc)
-            }
-        }, ContextCompat.getMainExecutor(this))
+                try {
+                    cameraProvider.unbindAll()
+                    cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalyzer)
+                } catch (exc: Exception) {
+                    Log.e("CameraX", "Use case binding failed", exc)
+                }
+            }, ContextCompat.getMainExecutor(this))
+        } else {
+            ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+        }
     }
 
     @androidx.annotation.OptIn(ExperimentalGetImage::class)
@@ -104,11 +130,12 @@ class MainActivity : AppCompatActivity() {
             detector.process(image)
                 .addOnSuccessListener { faces ->
                     if (faces.isNotEmpty()) {
-                        // Tambahkan penundaan sebelum analisis mood selesai
                         coroutineScope.launch {
                             delay(100)
                             analyzeMood(faces[0])
                         }
+                    } else {
+                        Log.d("FaceDetection", "No face detected.")
                     }
                 }
                 .addOnFailureListener { e ->
@@ -137,49 +164,38 @@ class MainActivity : AppCompatActivity() {
         }
 
         isMoodDetected = true
-        stopCamera() // Hentikan deteksi kamera
+        stopCamera()
 
-        // Simpan ke Firestore dan navigasi
-        saveDetectedMoodToFirestore(mood) { success ->
-            if (success) {
-                val intent = Intent(this, BerandaActivity::class.java)
-                intent.putExtra("MOOD", mood)
-                startActivity(intent)
-                finish() // Akhiri MainActivity
-            } else {
-                Toast.makeText(this, "Failed to save mood. Please try again.", Toast.LENGTH_SHORT).show()
-            }
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            saveDetectedMoodToFirestore(mood, user.uid)
+        } else {
+            Log.e("MainActivity", "User is not logged in, cannot save mood.")
         }
+
+        val intent = Intent(this, BerandaActivity::class.java)
+        intent.putExtra("MOOD", mood)
+        startActivity(intent)
+        finish()
     }
 
-    private fun saveDetectedMoodToFirestore(mood: String, callback: (Boolean) -> Unit) {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null) {
-            val moodData = hashMapOf(
-                "mood" to mood,
-                "lastUpdated" to System.currentTimeMillis() // Menambahkan timestamp untuk update terakhir
-            )
+    private fun saveDetectedMoodToFirestore(mood: String, userId: String) {
+        val moodData = hashMapOf("mood" to mood)
 
-            FirebaseFirestore.getInstance().collection("users")
-                .document(userId)
-                .set(moodData, SetOptions.merge()) // Gunakan opsi merge
-                .addOnSuccessListener {
-                    Log.d("MainActivity", "Mood successfully saved!")
-                    callback(true)
-                }
-                .addOnFailureListener { e ->
-                    Log.e("MainActivity", "Failed to save mood: ${e.message}")
-                    callback(false)
-                }
-        } else {
-            Log.e("MainActivity", "User ID not found. Failed to save mood.")
-            callback(false)
-        }
+        FirebaseFirestore.getInstance().collection("users")
+            .document(userId)
+            .set(moodData, SetOptions.merge())
+            .addOnSuccessListener {
+                Log.d("MainActivity", "Mood successfully saved or updated!")
+            }
+            .addOnFailureListener { e ->
+                Log.e("MainActivity", "Failed to save mood: ${e.message}")
+            }
     }
 
     private fun stopCamera() {
-        imageAnalyzer?.clearAnalyzer() // Hentikan analyzer
-        cameraExecutor.shutdown() // Hentikan executor
+        imageAnalyzer?.clearAnalyzer()
+        cameraExecutor.shutdown()
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
@@ -202,7 +218,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        coroutineScope.cancel() // Hentikan coroutine jika activity dihancurkan
+        coroutineScope.cancel()
         stopCamera()
     }
 
@@ -211,3 +227,4 @@ class MainActivity : AppCompatActivity() {
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
     }
 }
+

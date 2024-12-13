@@ -23,12 +23,14 @@
         android:theme="@style/Theme.ThisApp"
         tools:targetApi="31">
         <activity
+            android:name=".SetupPinActivity"
+            android:exported="false" />
+        <activity
             android:name=".DateHistoryActivity"
             android:exported="false" />
         <activity
             android:name=".EditProfileActivity"
-            android:exported="false" />
-        <!-- Welcome Activity -->
+            android:exported="false" /> <!-- Welcome Activity -->
         <activity
             android:name=".WelcomeActivity"
             android:clearTaskOnLaunch="true"

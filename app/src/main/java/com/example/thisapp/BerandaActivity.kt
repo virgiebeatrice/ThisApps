@@ -18,16 +18,8 @@ class BerandaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_beranda)
 
-        // Misalnya ini adalah Activity yang menampilkan ImageView
+        // Initialize views
         val homeIcon: ImageView = findViewById(R.id.home_icon)
-
-        homeIcon.setOnClickListener {
-            // Intent untuk membuka HomePageActivity
-            val intent = Intent(this, HomePageActivity::class.java)
-            startActivity(intent)
-        }
-
-        // Referensi UI
         val greetingTextView: TextView = findViewById(R.id.greeting_text)
         val moodImageView: ImageView = findViewById(R.id.moodImageView)
         val subtitleTextView: TextView = findViewById(R.id.subtitle_text)
@@ -36,26 +28,30 @@ class BerandaActivity : AppCompatActivity() {
         val profileIcon: ImageButton = findViewById(R.id.profile_icon)
         val dateTextView: TextView = findViewById(R.id.date_text)
 
-        // Set greeting
-        setupGreeting(greetingTextView)
-
-        // Tampilkan mood terakhir
-        displayLastDetectedMood(moodImageView, subtitleTextView, moodWordTextView, writeDiaryButton)
-
+        // Set date
         val currentDate = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault()).format(Date())
         dateTextView.text = currentDate
 
-        // Tombol untuk menulis catatan
+        // Set greeting
+        setupGreeting(greetingTextView)
+
+        // Display last detected mood
+        displayLastDetectedMood(moodImageView, subtitleTextView, moodWordTextView, writeDiaryButton)
+
+        // Navigation actions
+        homeIcon.setOnClickListener {
+            val intent = Intent(this, HomePageActivity::class.java)
+            startActivity(intent)
+        }
+
         writeDiaryButton.setOnClickListener {
             navigateToDiary()
         }
 
-        // Navigasi ke pengaturan profil
         profileIcon.setOnClickListener {
             startActivity(Intent(this, ProfileSettings::class.java))
         }
     }
-
 
     private fun setupGreeting(greetingTextView: TextView) {
         val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
