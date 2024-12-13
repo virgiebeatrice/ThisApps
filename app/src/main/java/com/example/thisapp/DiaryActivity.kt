@@ -5,18 +5,33 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar  // Pastikan untuk mengimpor ini
 
 class DiaryActivity : AppCompatActivity() {
     private lateinit var firestore: FirebaseFirestore
+    private lateinit var firebaseAuth: FirebaseAuth
+    private var userId: String? = null  // Menyimpan userId
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_diary)
 
-        // Inisialisasi Firestore
-        firestore = FirebaseFirestore.getInstance()
+        // Inisialisasi FirebaseAuth dan Firestore
+        firebaseAuth = FirebaseAuth.getInstance()  // Inisialisasi FirebaseAuth
+        firestore = FirebaseFirestore.getInstance()  // Inisialisasi Firestore
+
+        // Ambil userId dari FirebaseAuth
+        val currentUser = firebaseAuth.currentUser
+        userId = currentUser?.uid  // Ambil UID pengguna yang sedang login
+
+        // Jika pengguna belum login, arahkan ke halaman login
+        if (userId == null) {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()  // Tutup DiaryActivity jika pengguna belum login
+        }
 
         val backgroundRectangle: FrameLayout = findViewById(R.id.backgroundRectangle)
         val floatingActionButton: ImageButton = findViewById(R.id.floating_action_button)
@@ -26,7 +41,7 @@ class DiaryActivity : AppCompatActivity() {
         val editTextIsi: EditText = findViewById(R.id.editTextIsi)
 
         // Ambil mood dari Intent tanpa fallback
-        val mood = intent.getStringExtra("MOOD") // Jika mood tidak ada, nilai ini akan null
+        val mood = intent.getStringExtra("MOOD")
 
         // Periksa apakah mood ada dan ganti background sesuai mood
         if (mood != null) {
@@ -67,8 +82,9 @@ class DiaryActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Simpan data ke Firestore
+            // Simpan data ke Firestore dengan userId
             val diaryData = hashMapOf(
+                "userId" to userId,  // Menambahkan userId ke data diary
                 "date" to date,
                 "title" to title,
                 "content" to content
@@ -82,7 +98,7 @@ class DiaryActivity : AppCompatActivity() {
                     editTextTitle.text.clear()
                     editTextIsi.text.clear()
 
-                    // Beralih ke halaman com.example.thisapp.DateHistoryActivity
+                    // Beralih ke halaman DateHistoryActivity
                     val intent = Intent(this, DateHistoryActivity::class.java)
                     intent.putExtra("date", date) // Kirim tanggal jika diperlukan
                     startActivity(intent)

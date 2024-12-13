@@ -18,6 +18,15 @@ class BerandaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_beranda)
 
+        // Misalnya ini adalah Activity yang menampilkan ImageView
+        val homeIcon: ImageView = findViewById(R.id.home_icon)
+
+        homeIcon.setOnClickListener {
+            // Intent untuk membuka HomePageActivity
+            val intent = Intent(this, HomePageActivity::class.java)
+            startActivity(intent)
+        }
+
         // Referensi UI
         val greetingTextView: TextView = findViewById(R.id.greeting_text)
         val moodImageView: ImageView = findViewById(R.id.moodImageView)
@@ -46,6 +55,7 @@ class BerandaActivity : AppCompatActivity() {
             startActivity(Intent(this, ProfileSettings::class.java))
         }
     }
+
 
     private fun setupGreeting(greetingTextView: TextView) {
         val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)

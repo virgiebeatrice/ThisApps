@@ -1,7 +1,8 @@
 package com.example.thisapp
 
+// Data class to hold the diary entry properties
 data class DiaryEntry(
-    val date: String,
     val title: String,
-    val content: String
+    val date: String,
+    val snippet: String
 )

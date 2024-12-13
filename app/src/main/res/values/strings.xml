@@ -100,4 +100,8 @@
     <string name="create_your_account">Create your account</string>
     <string name="home">Home</string>
     <string name="profile">Profile</string>
+
+    <string name="content_description">Image or Icon</string>
+    <string name="schedule_empty">Your Diary</string>
+
 </resources>
