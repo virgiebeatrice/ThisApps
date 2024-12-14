@@ -20,32 +20,20 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var loginButton: Button
     private lateinit var signUpButton: Button
     private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        // Inisialisasi Firebase Auth
+        // Initialize Firebase Auth and Firestore
         auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
 
-        // Nonaktifkan Firestore cache untuk mendapatkan data terbaru
-        FirebaseFirestore.getInstance().firestoreSettings = FirebaseFirestoreSettings.Builder()
-            .setPersistenceEnabled(false) // Nonaktifkan cache Firestore
+        // Disable Firestore cache to fetch fresh data
+        db.firestoreSettings = FirebaseFirestoreSettings.Builder()
+            .setPersistenceEnabled(false)
             .build()
-
-        // Periksa status login dan PIN saat aplikasi dibuka
-        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
-        val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
-
-        if (isLoggedIn) {
-            // Jika sudah login, cek status PIN
-            val email = sharedPreferences.getString("active_user_email", "") ?: ""
-            if (email.isNotEmpty()) {
-                checkUserPinStatus(email) // Periksa PIN setelah login
-            } else {
-                navigateToLogin()
-            }
-        }
 
         // Initialize views
         emailEditText = findViewById(R.id.editText)
@@ -53,6 +41,19 @@ class LoginActivity : AppCompatActivity() {
         passwordVisibilityToggle = findViewById(R.id.passwordVisibilityToggle1)
         loginButton = findViewById(R.id.loginButton)
         signUpButton = findViewById(R.id.signupButton)
+
+        // Check login status and handle accordingly
+        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
+
+        if (isLoggedIn) {
+            val email = sharedPreferences.getString("active_user_email", "") ?: ""
+            if (email.isNotEmpty()) {
+                checkUserPinStatus(email)
+            } else {
+                navigateToLogin()
+            }
+        }
 
         // Set listeners
         loginButton.setOnClickListener { handleLogin() }
@@ -79,40 +80,32 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    val userId = auth.currentUser?.uid
-                    if (userId != null) {
-                        saveLoginState(email)
-                        checkUserPinStatus(email) // Check PIN status after login
-                    } else {
-                        Toast.makeText(this, "User ID not found", Toast.LENGTH_SHORT).show()
-                    }
+                    fetchAndSaveUserData(email)
+                    Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
+
+                    // Redirect ke halaman utama
+                    val intent = Intent(this, LandingPage::class.java)
+                    startActivity(intent)
+                    finish()
                 } else {
-                    Toast.makeText(
-                        this,
-                        "Login failed: ${task.exception?.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(this, "Login failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
             }
     }
 
     private fun checkUserPinStatus(email: String) {
-        val firestore = FirebaseFirestore.getInstance()
-        firestore.collection("PIN")  // Mengakses koleksi PIN, bukan Users
-            .whereEqualTo("email", email.toLowerCase()) // Menjaga konsistensi email (case-insensitive)
+        db.collection("PIN")
+            .whereEqualTo("email", email.toLowerCase())
             .get()
             .addOnSuccessListener { querySnapshot ->
                 if (querySnapshot.isEmpty) {
-                    // Jika PIN belum diatur, arahkan ke SetupPinActivity
                     navigateToSetupPin()
                 } else {
                     val pinDocument = querySnapshot.documents.firstOrNull()
                     val pin = pinDocument?.getString("pin")
                     if (pin.isNullOrEmpty()) {
-                        // Jika PIN tidak ada, arahkan ke SetupPinActivity
                         navigateToSetupPin()
                     } else {
-                        // Jika PIN sudah ada, lanjutkan ke LandingPage dan deteksi mood
                         navigateToLanding()
                     }
                 }
@@ -126,13 +119,14 @@ class LoginActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
         with(sharedPreferences.edit()) {
             putBoolean("isLoggedIn", true)
-            putString("active_user_email", email) // Store active user's email
+            putString("active_user_email", email)
             apply()
         }
     }
 
     private fun validateInput(email: String, password: String): Boolean {
-        val passwordPattern = Regex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,}$")
+        // Updated password pattern: Minimum 8 characters, 1 uppercase, 1 lowercase, 1 digit, 1 special character
+        val passwordPattern = Regex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,12}$")
 
         return when {
             email.isEmpty() -> {
@@ -140,25 +134,21 @@ class LoginActivity : AppCompatActivity() {
                 emailEditText.requestFocus()
                 false
             }
-
             !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
                 emailEditText.error = "Please enter a valid email"
                 emailEditText.requestFocus()
                 false
             }
-
             password.isEmpty() -> {
                 passwordEditText.error = "Password is required"
                 passwordEditText.requestFocus()
                 false
             }
-
             !password.matches(passwordPattern) -> {
-                passwordEditText.error = "Password must contain uppercase, lowercase, number, special character, and be at least 6 characters long"
+                passwordEditText.error = "Password must be 8-12 characters, contain uppercase, lowercase, number, and special character"
                 passwordEditText.requestFocus()
                 false
             }
-
             else -> true
         }
     }
@@ -166,10 +156,10 @@ class LoginActivity : AppCompatActivity() {
     private fun togglePasswordVisibility() {
         if (passwordEditText.inputType == (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
             passwordEditText.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            passwordVisibilityToggle.setImageResource(R.drawable.eye_open) // Open eye icon
+            passwordVisibilityToggle.setImageResource(R.drawable.eye_open)
         } else {
             passwordEditText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-            passwordVisibilityToggle.setImageResource(R.drawable.eye_closed) // Closed eye icon
+            passwordVisibilityToggle.setImageResource(R.drawable.eye_closed)
         }
         passwordEditText.setSelection(passwordEditText.text.length)
     }
@@ -196,4 +186,24 @@ class LoginActivity : AppCompatActivity() {
         val intent = Intent(this, SignupActivity::class.java)
         startActivity(intent)
     }
+
+    private fun fetchAndSaveUserData(email: String) {
+        db.collection("Users").document(email)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    val username = document.getString("username") ?: "Default Username"
+
+                    // Save username to SharedPreferences
+                    val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+                    val editor = sharedPreferences.edit()
+                    editor.putString("username", username)
+                    editor.apply()
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Failed to fetch user data: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
 }
