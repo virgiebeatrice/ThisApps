@@ -155,7 +155,8 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun validateInput(username: String, email: String, password: String): Boolean {
-        val passwordPattern = Regex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{6,}\$")
+        // Updated password validation (min 6, max 8 characters)
+        val passwordPattern = Regex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{6,8}\$")
 
         return when {
             username.isEmpty() -> {
@@ -175,7 +176,7 @@ class SignupActivity : AppCompatActivity() {
                 false
             }
             !password.matches(passwordPattern) -> {
-                passwordEditText.error = "Password harus mengandung huruf besar, huruf kecil, angka, karakter spesial, dan panjang minimal 6 karakter"
+                passwordEditText.error = "Password harus mengandung huruf besar, huruf kecil, angka, karakter spesial, dan panjang 6-8 karakter"
                 false
             }
             else -> true
