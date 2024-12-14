@@ -3,15 +3,21 @@ package com.example.thisapp
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.Menu
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Locale
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.SwitchCompat
+import androidx.appcompat.widget.Toolbar
 
 class ProfileSettings : AppCompatActivity() {
 
@@ -27,20 +33,65 @@ class ProfileSettings : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Set tema berdasarkan preferensi
+        sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val isDarkMode = sharedPreferences.getBoolean("isDarkMode", false)
+
+        // Dalam metode onCreate()
+        val backButton: ImageButton = findViewById(R.id.back_button)
+
+        backButton.setOnClickListener {
+            // Mengambil aktivitas terakhir yang dikunjungi dari SharedPreferences
+            val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+            val lastActivity = sharedPreferences.getString("last_activity", "MainActivity")
+
+            // Menentukan aktivitas yang akan dituju
+            val intent = when (lastActivity) {
+                "ProfileSettings" -> Intent(this, ProfileSettings::class.java)
+                else -> Intent(this, BerandaActivity::class.java)
+            }
+
+            startActivity(intent)
+            finish() // Menyelesaikan aktivitas saat ini (optional)
+        }
+
+
+        // Set tema sebelum setContentView
+        AppCompatDelegate.setDefaultNightMode(
+            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        )
+
         setContentView(R.layout.activity_profile_settings)
 
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
-        sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
 
         textViewUsername = findViewById(R.id.usernametext)
         textViewEmail = findViewById(R.id.emailtext)
         sectionEditProfile = findViewById(R.id.section_edit_profile)
         logoutButton = findViewById(R.id.button2)
-        imageViewBack = findViewById(R.id.imageViewback)
+//        imageViewBack = findViewById(R.id.imageViewback)
 
         // Fetch user data and display it
         getUserDataFromFirestore()
+
+        // Navbar
+        val toolbar: Toolbar = findViewById(R.id.toolbar2)
+        setSupportActionBar(toolbar)
+
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        val switchMode: SwitchCompat = findViewById(R.id.switch_mode)
+        switchMode.isChecked = isDarkMode
+
+        switchMode.setOnCheckedChangeListener { _, isChecked ->
+            // Set theme based on switch state
+            AppCompatDelegate.setDefaultNightMode(
+                if (isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+            )
+            saveThemePreference(isChecked)
+            recreate() // Apply theme change immediately
+        }
 
         // Edit Profile
         sectionEditProfile.setOnClickListener {
@@ -50,16 +101,34 @@ class ProfileSettings : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Logout
+        // Logout Button - Add a more stylish logout animation/dialog
         logoutButton.setOnClickListener {
-            performLogout()
-        }
+            // Custom Dialog with animations
+            val dialog = AlertDialog.Builder(this)
+                .setTitle("Logout")
+                .setMessage("Are you sure you want to logout?")
+                .setPositiveButton("Yes") { _, _ ->
+                    performLogout()
+                }
+                .setNegativeButton("No", null)
+                .create()
 
-        // Back button
-        imageViewBack.setOnClickListener {
-            val intent = Intent(this, BerandaActivity::class.java)
-            startActivity(intent)
-            finish()
+            // Custom Animation (optional)
+            dialog.window?.attributes?.windowAnimations = android.R.style.Animation_Dialog
+            dialog.show()
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    private fun saveThemePreference(isDarkMode: Boolean) {
+        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            putBoolean("isDarkMode", isDarkMode)
+            apply()
         }
     }
 

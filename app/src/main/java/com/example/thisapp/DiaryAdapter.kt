@@ -23,9 +23,9 @@ class DiaryAdapter(private val diaryEntries: List<DiaryEntry>) :
         holder.bind(diaryEntry) // Binding data to the view holder
         // Atur background sesuai mood
         val moodBackground = when (diaryEntry.mood) {
-            "Happy 😄" -> R.drawable.gradient_happy
-            "Sad 😢" -> R.drawable.gradient_sad
-            "Angry 😡" -> R.drawable.gradient_angry
+            "Happy 😄" -> R.drawable.happy
+            "Sad 😢" -> R.drawable.sad
+            "Angry 😡" -> R.drawable.card_angry
             "Scared 😨" -> R.drawable.gradient_scared
             "Surprised 😲" -> R.drawable.gradient_surprised
             else -> R.drawable.gradient_neutral

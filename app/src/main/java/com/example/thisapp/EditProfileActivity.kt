@@ -8,6 +8,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.SwitchCompat
+import androidx.appcompat.widget.Toolbar
 
 class EditProfileActivity : AppCompatActivity() {
 
@@ -21,7 +24,34 @@ class EditProfileActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val isDarkMode = sharedPreferences.getBoolean("isDarkMode", false)
+
+        // Set tema sebelum setContentView
+        AppCompatDelegate.setDefaultNightMode(
+            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        )
+
         setContentView(R.layout.activity_edit_profile)
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar2)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        val switchMode: SwitchCompat = findViewById(R.id.switch_mode)
+
+        switchMode.isChecked = isDarkMode
+
+        switchMode.setOnCheckedChangeListener { _, isChecked ->
+            // Set tema sesuai dengan status switch
+            AppCompatDelegate.setDefaultNightMode(
+                if (isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+            )
+
+            saveThemePreference(isChecked)
+            recreate() // Memastikan tema baru diterapkan setelah switch berubah
+        }
 
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
@@ -39,6 +69,14 @@ class EditProfileActivity : AppCompatActivity() {
 
         buttonSave.setOnClickListener {
             saveProfileData()
+        }
+    }
+
+    private fun saveThemePreference(isDarkMode: Boolean) {
+        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            putBoolean("isDarkMode", isDarkMode)
+            apply()
         }
     }
 
