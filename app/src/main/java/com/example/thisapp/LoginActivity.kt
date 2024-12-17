@@ -43,7 +43,20 @@ class LoginActivity : AppCompatActivity() {
         signUpButton = findViewById(R.id.signupButton)
 
         // Check login status and handle accordingly
+
         checkLoginStatus()
+
+        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
+
+        if (isLoggedIn) {
+            val email = sharedPreferences.getString("active_user_email", "") ?: ""
+            if (email.isNotEmpty()) {
+                checkUserPinStatus(email)
+            } else {
+                navigateToLogin()
+            }
+        }
 
         // Set listeners
         loginButton.setOnClickListener { handleLogin() }
@@ -83,12 +96,18 @@ class LoginActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     fetchAndSaveUserData(email)
                     Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
-
+                    
                     // Save login state and email
                     saveLoginState(email)
 
                     // Check PIN status
                     checkUserPinStatus(email)
+
+                    // Redirect ke halaman utama
+                    val intent = Intent(this, LandingPage::class.java)
+                    startActivity(intent)
+                    finish()
+
                 } else {
                     Toast.makeText(this, "Login failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
@@ -108,8 +127,10 @@ class LoginActivity : AppCompatActivity() {
                     if (pin.isNullOrEmpty()) {
                         navigateToSetupPin()
                     } else {
+
                         // PIN exists, navigate to LandingPage
                         navigateToLandingPage()
+
                     }
                 }
             }
@@ -128,8 +149,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun validateInput(email: String, password: String): Boolean {
-        // Password pattern: Minimum 8 characters, 1 uppercase, 1 lowercase, 1 digit, 1 special character
-        val passwordPattern = Regex("^(?=.[A-Z])(?=.[a-z])(?=.\\d)(?=.[@$!%?&])[A-Za-z\\d@$!%?&]{8,12}$")
+        // Updated password pattern: Minimum 8 characters, 1 uppercase, 1 lowercase, 1 digit, 1 special character
+        val passwordPattern = Regex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,12}$")
 
         return when {
             email.isEmpty() -> {
