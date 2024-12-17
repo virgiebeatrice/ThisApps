@@ -2,8 +2,12 @@ package com.example.thisapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -11,6 +15,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.appcompat.widget.Toolbar
+import com.google.android.material.textfield.TextInputLayout
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class EditProfileActivity : AppCompatActivity() {
 
@@ -35,9 +43,19 @@ class EditProfileActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_edit_profile)
 
+        val backButton: ImageButton = findViewById(R.id.back_button)
+        backButton.setOnClickListener {
+            onBackPressed()
+        }
+
         val toolbar: Toolbar = findViewById(R.id.toolbar2)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        val dateTextView1: TextView = findViewById(R.id.date_text)
+
+        val currentDate1 = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault()).format(Date())
+        dateTextView1.text = currentDate1
 
         val switchMode: SwitchCompat = findViewById(R.id.switch_mode)
 
@@ -57,11 +75,12 @@ class EditProfileActivity : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
 
         // Initialize views
-        editTextName = findViewById(R.id.editTextText2)
-        editTextPassword = findViewById(R.id.editTextText4)
-        editTextConfirmPassword = findViewById(R.id.editTextText5)
-        editTextPIN = findViewById(R.id.editTextText6)
+        editTextName = findViewById<TextInputLayout>(R.id.editTextText2).editText as EditText
+        editTextPassword = findViewById<TextInputLayout>(R.id.editTextText4).editText as EditText
+        editTextConfirmPassword = findViewById<TextInputLayout>(R.id.editTextText5).editText as EditText
+        editTextPIN = findViewById<TextInputLayout>(R.id.editTextText6).editText as EditText
         buttonSave = findViewById(R.id.button4)
+
 
         // Set initial values from intent
         val username = intent.getStringExtra("username")
@@ -69,6 +88,23 @@ class EditProfileActivity : AppCompatActivity() {
 
         buttonSave.setOnClickListener {
             saveProfileData()
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_profile -> {
+                // Aksi untuk tombol profile, misalnya pindah ke halaman profil
+                val intent = Intent(this, ProfileSettings::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

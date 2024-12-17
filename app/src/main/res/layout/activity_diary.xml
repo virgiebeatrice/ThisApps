@@ -72,7 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:contentDescription="Back Button"
-        android:src="@drawable/ic_back"
+        android:src="@drawable/baseline_keyboard_backspace_24"
         app:backgroundTint="@color/black"
         app:fabSize="mini"
         app:layout_constraintBottom_toTopOf="@+id/editTextText"

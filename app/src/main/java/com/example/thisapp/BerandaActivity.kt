@@ -53,6 +53,14 @@ class BerandaActivity : AppCompatActivity() {
             recreate() // Memastikan tema baru diterapkan setelah switch berubah
         }
 
+//        switchMode.setOnCheckedChangeListener { _, isChecked ->
+//            saveThemePreference(isChecked)
+//            lifecycleScope.launch {
+//                delay(200) // Tunggu 200ms untuk memastikan data tersimpan
+//                recreate()
+//            }
+//        }
+
         // Referensi UI
         val greetingTextView: TextView = findViewById(R.id.greeting_text)
         val moodImageView: ImageView = findViewById(R.id.moodImageView)

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -18,6 +19,8 @@ import java.util.Locale
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.appcompat.widget.Toolbar
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class ProfileSettings : AppCompatActivity() {
 
@@ -36,35 +39,52 @@ class ProfileSettings : AppCompatActivity() {
         // Set tema berdasarkan preferensi
         sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
         val isDarkMode = sharedPreferences.getBoolean("isDarkMode", false)
-
-        // Dalam metode onCreate()
-        val backButton: ImageButton = findViewById(R.id.back_button)
-
-        backButton.setOnClickListener {
-            // Mengambil aktivitas terakhir yang dikunjungi dari SharedPreferences
-            val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
-            val lastActivity = sharedPreferences.getString("last_activity", "MainActivity")
-
-            // Menentukan aktivitas yang akan dituju
-            val intent = when (lastActivity) {
-                "ProfileSettings" -> Intent(this, ProfileSettings::class.java)
-                else -> Intent(this, BerandaActivity::class.java)
-            }
-
-            startActivity(intent)
-            finish() // Menyelesaikan aktivitas saat ini (optional)
-        }
-
-
-        // Set tema sebelum setContentView
         AppCompatDelegate.setDefaultNightMode(
             if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
         )
 
         setContentView(R.layout.activity_profile_settings)
 
+
+//        // Dalam metode onCreate()
+//        val backButton: ImageButton = findViewById(R.id.back_button)
+//        backButton.setOnClickListener {
+//            val intent = Intent(this, HomePageActivity::class.java)
+//            startActivity(intent)
+//            val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+//            val lastActivity = sharedPreferences.getString("last_activity", "HomePageActivity") ?: "HomePageActivity"
+//
+////            val intent = when (lastActivity) {
+////                "ProfileSettings" -> Intent(this, ProfileSettings::class.java)
+////                else -> Intent(this, BerandaActivity::class.java)
+////            }
+////
+////            startActivity(intent)
+////            finish() // Menyelesaikan aktivitas saat ini (optional)
+//        }
+
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
+
+        val backButton: ImageButton = findViewById(R.id.back_button)
+        backButton.setOnClickListener {
+            onBackPressed()
+        }
+
+        val dateTextView: TextView = findViewById(R.id.date_text)
+
+        val currentDate = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault()).format(Date())
+        dateTextView.text = currentDate
+
+        val switchMode: SwitchCompat = findViewById(R.id.switch_mode)
+        switchMode.isChecked = isDarkMode
+        switchMode.setOnCheckedChangeListener { _, isChecked ->
+            AppCompatDelegate.setDefaultNightMode(
+                if (isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+            )
+            saveThemePreference(isChecked)
+            recreate() // Terapkan tema baru
+        }
 
         textViewUsername = findViewById(R.id.usernametext)
         textViewEmail = findViewById(R.id.emailtext)
@@ -81,17 +101,6 @@ class ProfileSettings : AppCompatActivity() {
 
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        val switchMode: SwitchCompat = findViewById(R.id.switch_mode)
-        switchMode.isChecked = isDarkMode
-
-        switchMode.setOnCheckedChangeListener { _, isChecked ->
-            // Set theme based on switch state
-            AppCompatDelegate.setDefaultNightMode(
-                if (isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-            )
-            saveThemePreference(isChecked)
-            recreate() // Apply theme change immediately
-        }
 
         // Edit Profile
         sectionEditProfile.setOnClickListener {
@@ -122,6 +131,18 @@ class ProfileSettings : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_profile -> {
+                // Aksi untuk tombol profile, misalnya pindah ke halaman profil
+                val intent = Intent(this, ProfileSettings::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun saveThemePreference(isDarkMode: Boolean) {

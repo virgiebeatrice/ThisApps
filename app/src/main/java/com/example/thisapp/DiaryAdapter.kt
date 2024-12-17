@@ -5,6 +5,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
+import android.widget.ImageView
+import java.text.SimpleDateFormat
+import java.util.*
 
 // Adapter class for RecyclerView
 class DiaryAdapter(private val diaryEntries: List<DiaryEntry>) :
@@ -23,17 +28,16 @@ class DiaryAdapter(private val diaryEntries: List<DiaryEntry>) :
         holder.bind(diaryEntry) // Binding data to the view holder
         // Atur background sesuai mood
         val moodBackground = when (diaryEntry.mood) {
-            "Happy 😄" -> R.drawable.happy
-            "Sad 😢" -> R.drawable.sad
+            "Happy 😄" -> R.drawable.card_happy
+            "Sad 😢" -> R.drawable.card_sad
             "Angry 😡" -> R.drawable.card_angry
-            "Scared 😨" -> R.drawable.gradient_scared
-            "Surprised 😲" -> R.drawable.gradient_surprised
-            else -> R.drawable.gradient_neutral
+            "Scared 😨" -> R.drawable.card_scared
+            "Surprised 😲" -> R.drawable.card_surprised
+            else -> R.drawable.card_neutral
         }
         holder.itemView.setBackgroundResource(moodBackground)
 
     }
-
 
     // Returns the size of the data list
     override fun getItemCount(): Int = diaryEntries.size
