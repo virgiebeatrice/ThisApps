@@ -25,7 +25,7 @@ class PinActivity : AppCompatActivity() {
 
         // Periksa jika user belum login
         if (user == null) {
-            Toast.makeText(this, "Pengguna belum login!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "User not logged in!", Toast.LENGTH_SHORT).show()
             redirectToLogin()
             return
         }
@@ -52,7 +52,7 @@ class PinActivity : AppCompatActivity() {
                     }
                 }
                 .addOnFailureListener { e ->
-                    Toast.makeText(this, "Gagal mengambil data PIN. Silakan coba lagi.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Failed to retrieve PIN. Please try again.", Toast.LENGTH_SHORT).show()
                     e.printStackTrace()
                     redirectToLogin()
                 }
@@ -99,11 +99,11 @@ class PinActivity : AppCompatActivity() {
 
     private fun validatePin(enteredPin: String, savedPin: String) {
         if (enteredPin == savedPin) {
-            Toast.makeText(this, "PIN benar, selamat datang!", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this, BerandaActivity::class.java))
+            Toast.makeText(this, "PIN is correct. Welcome!", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, HomePageActivity::class.java))
             finish()
         } else {
-            Toast.makeText(this, "PIN salah, coba lagi!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Incorrect PIN. Please try again!", Toast.LENGTH_SHORT).show()
             clearPinFields()
         }
     }

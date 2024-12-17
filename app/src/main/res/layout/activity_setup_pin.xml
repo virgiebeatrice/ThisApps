@@ -92,7 +92,7 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:backgroundTint="@color/blue"
+        android:backgroundTint="@color/purple"
         android:fontFamily="@font/urbanist_bold"
         android:text="Set PIN"
         android:textColor="@color/white"

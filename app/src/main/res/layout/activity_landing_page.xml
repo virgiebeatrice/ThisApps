@@ -41,7 +41,7 @@
         android:elevation="8dp"
         android:fontFamily="@font/urbanist_bold"
         android:gravity="center"
-        android:outlineSpotShadowColor="#FFFF00"
+        android:outlineSpotShadowColor="@color/black"
         android:padding="8dp"
         android:stateListAnimator="@null"
         android:text="Scan Your Mood"

@@ -77,7 +77,7 @@ class DiaryActivity : AppCompatActivity() {
 
             // Validasi input
             if (title.isEmpty() || content.isEmpty()) {
-                Toast.makeText(this, "Harap isi semua kolom", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please fill in the diary content", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -94,7 +94,7 @@ class DiaryActivity : AppCompatActivity() {
             firestore.collection("Diaries")
                 .add(diaryData)
                 .addOnSuccessListener {
-                    Toast.makeText(this, "Diary berhasil disimpan", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Diary successfully saved", Toast.LENGTH_SHORT).show()
                     // Reset input setelah menyimpan
                     editTextTitle.text.clear()
                     editTextIsi.text.clear()
@@ -106,8 +106,8 @@ class DiaryActivity : AppCompatActivity() {
                     finish()
                 }
                 .addOnFailureListener { e ->
-                    Toast.makeText(this, "Gagal menyimpan: ${e.message}", Toast.LENGTH_SHORT).show()
-                    Log.e("DiaryActivity", "Error saat menyimpan diary: ${e.message}")
+                    Toast.makeText(this, "Failed to save: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Log.e("DiaryActivity", "An error occurred while saving the diary: ${e.message}")
                 }
         }
     }

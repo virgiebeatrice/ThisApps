@@ -43,6 +43,9 @@ class LoginActivity : AppCompatActivity() {
         signUpButton = findViewById(R.id.signupButton)
 
         // Check login status and handle accordingly
+
+        checkLoginStatus()
+
         val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
         val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
 
@@ -67,6 +70,17 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    private fun checkLoginStatus() {
+        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
+        val email = sharedPreferences.getString("active_user_email", "")
+
+        if (isLoggedIn && !email.isNullOrEmpty()) {
+            // User is logged in, check PIN status
+            checkUserPinStatus(email)
+        }
+    }
+
     private fun handleLogin() {
         val email = emailEditText.text.toString().trim()
         val password = passwordEditText.text.toString().trim()
@@ -82,11 +96,18 @@ class LoginActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     fetchAndSaveUserData(email)
                     Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
+                    
+                    // Save login state and email
+                    saveLoginState(email)
+
+                    // Check PIN status
+                    checkUserPinStatus(email)
 
                     // Redirect ke halaman utama
                     val intent = Intent(this, LandingPage::class.java)
                     startActivity(intent)
                     finish()
+
                 } else {
                     Toast.makeText(this, "Login failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
@@ -106,7 +127,10 @@ class LoginActivity : AppCompatActivity() {
                     if (pin.isNullOrEmpty()) {
                         navigateToSetupPin()
                     } else {
-                        navigateToLanding()
+
+                        // PIN exists, navigate to LandingPage
+                        navigateToLandingPage()
+
                     }
                 }
             }
@@ -170,14 +194,8 @@ class LoginActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun navigateToLanding() {
+    private fun navigateToLandingPage() {
         val intent = Intent(this, LandingPage::class.java)
-        startActivity(intent)
-        finish()
-    }
-
-    private fun navigateToLogin() {
-        val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish()
     }
@@ -205,5 +223,4 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "Failed to fetch user data: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
-
 }

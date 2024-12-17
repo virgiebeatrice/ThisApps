@@ -116,10 +116,10 @@ class SignupActivity : AppCompatActivity() {
                 editor.putBoolean("isLoggedIn", true) // Save login status
                 editor.apply()
 
-                showToast("Pendaftaran berhasil")
+                showToast("Registration successful")
             }
             .addOnFailureListener { e ->
-                showToast("Gagal menyimpan data pengguna: ${e.message}")
+                showToast("Failed to save user data: ${e.message}")
             }
     }
 
@@ -138,7 +138,7 @@ class SignupActivity : AppCompatActivity() {
                 }
             }
             .addOnFailureListener { e ->
-                showToast("Gagal memeriksa status PIN: ${e.message}")
+                showToast("Failed to check PIN status: ${e.message}")
             }
     }
 
@@ -160,23 +160,24 @@ class SignupActivity : AppCompatActivity() {
 
         return when {
             username.isEmpty() -> {
-                usernameEditText.error = "Username diperlukan"
+                usernameEditText.error = "Username is required"
                 false
             }
             email.isEmpty() -> {
-                emailEditText.error = "Email diperlukan"
+                emailEditText.error = "Email is required"
                 false
             }
             !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
-                emailEditText.error = "Masukkan email yang valid"
+                emailEditText.error = "Please enter a valid email"
                 false
             }
             password.isEmpty() -> {
-                passwordEditText.error = "Password diperlukan"
+                passwordEditText.error = "Password is required"
                 false
             }
             !password.matches(passwordPattern) -> {
-                passwordEditText.error = "Password harus mengandung huruf besar, huruf kecil, angka, karakter spesial, dan panjang 6-8 karakter"
+                passwordEditText.error = "Password must contain uppercase letters, lowercase letters, numbers, special characters, and be at least 6 characters long."
+
                 false
             }
             else -> true

@@ -4,13 +4,17 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +25,12 @@ import com.cloudinary.android.callback.UploadCallback
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.Locale
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.SwitchCompat
+import androidx.appcompat.widget.Toolbar
+import java.text.SimpleDateFormat
+import java.util.Date
 import com.google.firebase.firestore.SetOptions
 import java.io.File
 import java.io.FileOutputStream
@@ -46,19 +56,43 @@ class ProfileSettings : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Set tema berdasarkan preferensi
+        sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val isDarkMode = sharedPreferences.getBoolean("isDarkMode", false)
+        AppCompatDelegate.setDefaultNightMode(
+            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        )
+
         setContentView(R.layout.activity_profile_settings)
 
-        // Initialize Firebase and SharedPreferences
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
-        sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+
+        val backButton: ImageButton = findViewById(R.id.back_button)
+        backButton.setOnClickListener {
+            onBackPressed()
+        }
+
+        val dateTextView: TextView = findViewById(R.id.date_text)
+
+        val currentDate = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault()).format(Date())
+        dateTextView.text = currentDate
+
+        val switchMode: SwitchCompat = findViewById(R.id.switch_mode)
+        switchMode.isChecked = isDarkMode
+        switchMode.setOnCheckedChangeListener { _, isChecked ->
+            AppCompatDelegate.setDefaultNightMode(
+                if (isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+            )
+            saveThemePreference(isChecked)
+            recreate() // Terapkan tema baru
+        }
 
         // Initialize view components
         textViewUsername = findViewById(R.id.usernametext)
         textViewEmail = findViewById(R.id.emailtext)
         sectionEditProfile = findViewById(R.id.section_edit_profile)
         logoutButton = findViewById(R.id.button2)
-        imageViewBack = findViewById(R.id.imageViewback)
         imageViewAvatar = findViewById(R.id.imageView4)
 
         // Initialize Cloudinary only once
@@ -83,6 +117,37 @@ class ProfileSettings : AppCompatActivity() {
             uri?.let { uploadImageToCloudinary(it) }
         }
 
+        // Navbar
+        val toolbar: Toolbar = findViewById(R.id.toolbar2)
+        setSupportActionBar(toolbar)
+
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+
+        // Edit Profile
+        sectionEditProfile.setOnClickListener {
+            val intent = Intent(this, EditProfileActivity::class.java)
+            intent.putExtra("username", textViewUsername.text.toString())
+            intent.putExtra("email", textViewEmail.text.toString())
+            startActivity(intent)
+        }
+
+        // Logout Button - Add a more stylish logout animation/dialog
+        logoutButton.setOnClickListener {
+            // Custom Dialog with animations
+            val dialog = AlertDialog.Builder(this)
+                .setTitle("Logout")
+                .setMessage("Are you sure you want to logout?")
+                .setPositiveButton("Yes") { _, _ ->
+                    performLogout()
+                }
+                .setNegativeButton("No", null)
+                .create()
+
+            // Custom Animation (optional)
+            dialog.window?.attributes?.windowAnimations = android.R.style.Animation_Dialog
+            dialog.show()
+
         imageViewAvatar?.setOnClickListener {
             imagePickerLauncher.launch("image/*")
         }
@@ -94,7 +159,32 @@ class ProfileSettings : AppCompatActivity() {
                 putExtra("email", textViewEmail?.text.toString())
             }
             startActivityForResult(intent, REQUEST_CODE_EDIT_PROFILE)
+
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_profile -> {
+                // Aksi untuk tombol profile, misalnya pindah ke halaman profil
+                val intent = Intent(this, ProfileSettings::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun saveThemePreference(isDarkMode: Boolean) {
+        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            putBoolean("isDarkMode", isDarkMode)
+            apply()
 
         // Logout button handling
         logoutButton?.setOnClickListener {
@@ -105,13 +195,9 @@ class ProfileSettings : AppCompatActivity() {
 
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
+
         }
 
-        // Back button handling
-        imageViewBack?.setOnClickListener {
-            startActivity(Intent(this, BerandaActivity::class.java))
-            finish()
-        }
     }
 
     // This method is called after finishing EditProfileActivity
