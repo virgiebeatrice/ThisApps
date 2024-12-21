@@ -2,12 +2,18 @@ package com.example.thisapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.*
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
+import androidx.appcompat.widget.Toolbar
 import java.util.*
 
 class BerandaActivity : AppCompatActivity() {
@@ -16,40 +22,106 @@ class BerandaActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Set tema berdasarkan preferensi
+        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val isDarkMode = sharedPreferences.getBoolean("isDarkMode", false)
+
+        // Set tema sebelum setContentView
+        AppCompatDelegate.setDefaultNightMode(
+            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        )
+
         setContentView(R.layout.activity_beranda)
 
-        // Initialize views
-        val homeIcon: ImageView = findViewById(R.id.home_icon)
+        val homeIcon: ImageView = findViewById(R.id.home_button)
+        homeIcon.setOnClickListener {
+            // Intent to open HomePageActivity
+            val intent = Intent(this, HomePageActivity::class.java)
+            startActivity(intent)
+        }
+
+        // Navbar
+        val toolbar: Toolbar = findViewById(R.id.toolbar2)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+
+        val switchMode: SwitchCompat = findViewById(R.id.switch_mode)
+
+        switchMode.isChecked = isDarkMode
+
+        switchMode.setOnCheckedChangeListener { _, isChecked ->
+            // Set tema sesuai dengan status switch
+            AppCompatDelegate.setDefaultNightMode(
+                if (isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+            )
+
+            saveThemePreference(isChecked)
+
+            recreate() // Memastikan tema baru diterapkan setelah switch berubah
+        }
+
+
+        // Referensi UI
         val greetingTextView: TextView = findViewById(R.id.greeting_text)
         val moodImageView: ImageView = findViewById(R.id.moodImageView)
         val subtitleTextView: TextView = findViewById(R.id.subtitle_text)
         val moodWordTextView: TextView = findViewById(R.id.mood_word)
         val writeDiaryButton: Button = findViewById(R.id.write_diary_button)
-        val profileIcon: ImageButton = findViewById(R.id.profile_icon)
         val dateTextView: TextView = findViewById(R.id.date_text)
-
-        // Set date
-        val currentDate = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault()).format(Date())
-        dateTextView.text = currentDate
 
         // Set greeting
         setupGreeting(greetingTextView)
 
-        // Display last detected mood
+        val currentDate1 = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault()).format(Date())
+        dateTextView.text = currentDate1
+
+        // Tampilkan mood terakhir
         displayLastDetectedMood(moodImageView, subtitleTextView, moodWordTextView, writeDiaryButton)
 
-        // Navigation actions
-        homeIcon.setOnClickListener {
-            val intent = Intent(this, HomePageActivity::class.java)
-            startActivity(intent)
-        }
-
+        // Tombol untuk menulis catatan
         writeDiaryButton.setOnClickListener {
             navigateToDiary()
         }
 
-        profileIcon.setOnClickListener {
-            startActivity(Intent(this, ProfileSettings::class.java))
+
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val isDarkMode = sharedPreferences.getBoolean("isDarkMode", false)
+
+        // Set tema sesuai preferensi
+        AppCompatDelegate.setDefaultNightMode(
+            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        )
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_profile -> {
+                // Aksi untuk tombol profile, misalnya pindah ke halaman profil
+                val intent = Intent(this, ProfileSettings::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun saveThemePreference(isDarkMode: Boolean) {
+        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            putBoolean("isDarkMode", isDarkMode)
+            apply() // Pastikan perubahan disimpan
         }
     }
 
@@ -90,24 +162,29 @@ class BerandaActivity : AppCompatActivity() {
         moodWordTextView: TextView,
         writeDiaryButton: Button
     ) {
-        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
         val userId = FirebaseAuth.getInstance().currentUser?.uid
 
         if (userId != null) {
             firestore.collection("users").document(userId)
-                .get()
-                .addOnSuccessListener { document ->
-                    val mood = document?.getString("mood")
+                .addSnapshotListener { documentSnapshot, error ->
+                    if (error != null) {
+                        Log.e("BerandaActivity", "Error fetching mood data: ${error.message}")
+                        loadMoodFromPrefs(moodImageView, subtitleTextView, moodWordTextView, writeDiaryButton)
+                        return@addSnapshotListener
+                    }
 
-                    if (mood != null) {
-                        saveMoodToPrefs(mood)
-                        updateUIWithMood(mood, moodImageView, subtitleTextView, moodWordTextView, writeDiaryButton)
+                    if (documentSnapshot != null && documentSnapshot.exists()) {
+                        val mood = documentSnapshot.getString("mood")
+
+                        if (mood != null) {
+                            saveMoodToPrefs(mood)
+                            updateUIWithMood(mood, moodImageView, subtitleTextView, moodWordTextView, writeDiaryButton)
+                        } else {
+                            loadMoodFromPrefs(moodImageView, subtitleTextView, moodWordTextView, writeDiaryButton)
+                        }
                     } else {
                         loadMoodFromPrefs(moodImageView, subtitleTextView, moodWordTextView, writeDiaryButton)
                     }
-                }
-                .addOnFailureListener {
-                    loadMoodFromPrefs(moodImageView, subtitleTextView, moodWordTextView, writeDiaryButton)
                 }
         } else {
             loadMoodFromPrefs(moodImageView, subtitleTextView, moodWordTextView, writeDiaryButton)

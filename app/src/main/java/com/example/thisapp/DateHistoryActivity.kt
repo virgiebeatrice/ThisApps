@@ -3,6 +3,8 @@ package com.example.thisapp
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.CalendarView
 import android.widget.ImageView
@@ -16,6 +18,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.SwitchCompat
+import androidx.appcompat.widget.Toolbar
 
 class DateHistoryActivity : AppCompatActivity() {
 
@@ -31,6 +36,13 @@ class DateHistoryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_date_history)
+
+        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val isDarkMode = sharedPreferences.getBoolean("isDarkMode", false)
+
+        AppCompatDelegate.setDefaultNightMode(
+            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        )
 
         // Initialize FirebaseAuth and Firestore
         firebaseAuth = FirebaseAuth.getInstance()
@@ -57,11 +69,32 @@ class DateHistoryActivity : AppCompatActivity() {
         recyclerView.adapter = historyAdapter
 
         // Set up Home Icon
-        val homeIcon: ImageView = findViewById(R.id.home_icon)
+        val homeIcon: ImageView = findViewById(R.id.home_button)
         homeIcon.setOnClickListener {
             // Intent to open HomePageActivity
             val intent = Intent(this, HomePageActivity::class.java)
             startActivity(intent)
+        }
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar2)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        val dateTextView1: TextView = findViewById(R.id.date_text)
+
+        val currentDate1 = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault()).format(Date())
+        dateTextView1.text = currentDate1
+
+        val switchMode: SwitchCompat = findViewById(R.id.switch_mode)
+
+        switchMode.isChecked = isDarkMode
+
+        switchMode.setOnCheckedChangeListener { _, isChecked ->
+            AppCompatDelegate.setDefaultNightMode(
+                if (isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+            )
+            saveThemePreference(isChecked)
+            recreate() // Refresh aktivitas agar perubahan tema terlihat
         }
 
         // Set listener for CalendarView
@@ -76,6 +109,31 @@ class DateHistoryActivity : AppCompatActivity() {
         loadHistoryForDate(currentDate, userId)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_profile -> {
+                // Aksi untuk tombol profile, misalnya pindah ke halaman profil
+                val intent = Intent(this, ProfileSettings::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun saveThemePreference(isDarkMode: Boolean) {
+        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            putBoolean("isDarkMode", isDarkMode)
+            apply() // Pastikan perubahan disimpan
+        }
+    }
+
     private fun loadHistoryForDate(date: String, userId: String?) {
         if (userId != null) {
             firestore.collection("Diaries")
@@ -88,16 +146,16 @@ class DateHistoryActivity : AppCompatActivity() {
                         // Display "No Data" message and hide RecyclerView
                         recyclerView.visibility = View.GONE
                         noDataTextView.visibility = View.VISIBLE
-                        noDataTextView.text = "Tidak ada data untuk tanggal $date"
+                        noDataTextView.text = "There are no diary entries for $date"
                     } else {
                         // Show data in RecyclerView and hide "No Data" message
                         recyclerView.visibility = View.VISIBLE
                         noDataTextView.visibility = View.GONE
 
                         for (document in documents) {
-                            val title = document.getString("title") ?: "Tidak ada judul"
-                            val content = document.getString("content") ?: "Konten kosong"
-                            val mood = document.getString("mood") ?: "Tidak ada mood"
+                            val title = document.getString("title") ?: "There is no title"
+                            val content = document.getString("content") ?: "Empty Content"
+                            val mood = document.getString("mood") ?: "No mood"
                             historyList.add(DiaryEntry(date, title, content, mood))
                         }
                         Log.d("DateHistoryActivity", "HistoryList after loading: $historyList")
@@ -106,7 +164,7 @@ class DateHistoryActivity : AppCompatActivity() {
                 .addOnFailureListener { exception ->
                     Toast.makeText(
                         this,
-                        "Gagal memuat data: ${exception.message}",
+                        "Failed to load data: ${exception.message}",
                         Toast.LENGTH_SHORT
                     ).show()
                 }

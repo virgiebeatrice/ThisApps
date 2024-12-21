@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
     tools:context=".MainActivity">
 
     <!-- Title TextView -->
@@ -17,6 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="108dp"
         android:text="Track Your Mood"
+        android:fontFamily="@font/urbanist_bold"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"

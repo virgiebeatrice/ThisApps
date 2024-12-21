@@ -5,13 +5,44 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Avatar -->
-
     <!-- Username -->
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat"
+        tools:layout_editor_absoluteX="0dp">
+
+        <ImageButton
+            android:id="@+id/back_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginEnd="16dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/baseline_keyboard_backspace_24" />
+
+        <TextView
+            android:id="@+id/date_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="30dp"
+            android:text="12, Desember 2024"
+            android:textAppearance="@style/ToolbarTitleText"
+            android:textSize="15sp" />
+
+        <include layout="@layout/switch_item" />
+    </androidx.appcompat.widget.Toolbar>
+
     <ImageView
         android:id="@+id/imageView4"
-        android:layout_width="210dp"
-        android:layout_height="207dp"
+        android:layout_width="189dp"
+        android:layout_height="176dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -24,8 +55,9 @@
         android:id="@+id/textViewusername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="48dp"
         android:layout_marginTop="60dp"
+        android:fontFamily="@font/urbanist_bold"
         android:text="Username"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -38,19 +70,22 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Username"
-        android:textSize="10sp"
+        android:fontFamily="@font/dmsans"
+        android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textViewusername"
         app:layout_constraintTop_toBottomOf="@+id/textViewusername" />
 
     <!-- Email -->
+
     <TextView
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="48dp"
         android:layout_marginTop="20dp"
+        android:fontFamily="@font/urbanist_bold"
         android:text="Email"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -62,8 +97,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="email"
-        android:textSize="10sp"
+        android:text="Email"
+        android:fontFamily="@font/dmsans"
+        android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textView10"
@@ -75,14 +111,13 @@
 
     <LinearLayout
         android:id="@+id/section_edit_profile"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="56dp"
-        android:layout_marginEnd="24dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailtext">
 
@@ -91,6 +126,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:fontFamily="@font/dmsans"
             android:text="Edit Profile"
             android:textSize="16sp" />
 
@@ -108,23 +144,22 @@
         android:layout_height="48dp"
         android:layout_marginTop="109dp"
         android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/purple_200"
+        android:elevation="8dp"
+        android:fontFamily="@font/urbanist_bold"
+        android:gravity="center"
+        android:outlineSpotShadowColor="@color/black"
+        android:padding="8dp"
+        android:stateListAnimator="@null"
         android:text="Logout"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/section_edit_profile" />
+        app:layout_constraintTop_toBottomOf="@+id/section_edit_profile"
+        app:layout_constraintVertical_bias="0.0" />
 
-    <ImageView
-        android:id="@+id/imageViewback"
-        android:layout_width="26dp"
-        android:layout_height="30dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.041"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.022"
-        app:srcCompat="@drawable/ic_back" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

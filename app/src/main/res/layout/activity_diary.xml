@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#F9F9F9">
+    android:layout_height="match_parent">
 
     <!-- Persegi (background) dari atas hingga title -->
     <FrameLayout
@@ -42,7 +41,6 @@
         android:layout_marginTop="52dp"
         android:fontFamily="@font/dmsans"
         android:text="@string/done"
-        android:textColor="@color/black"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.953"
@@ -72,7 +70,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:contentDescription="Back Button"
-        android:src="@drawable/ic_back"
+        android:src="@drawable/baseline_keyboard_backspace_24"
         app:backgroundTint="@color/black"
         app:fabSize="mini"
         app:layout_constraintBottom_toTopOf="@+id/editTextText"
@@ -89,7 +87,6 @@
         android:layout_width="360dp"
         android:layout_height="490dp"
         android:layout_marginTop="16dp"
-        android:background="@android:color/white"
         android:gravity="top"
         android:hint="Write your content here"
         android:inputType="textMultiLine"

@@ -6,11 +6,39 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
+    <color name="darkGray">#2E2D2D</color>
     <color name="white">#FFFFFFFF</color>
     <color name="yellow">#FEE765</color>
     <color name="blue">#8DB9D6</color>
     <color name="red">#EC4242</color>
     <color name="grey">#ABA7A6</color>
+    <color name="light_grey">#F6F3F3</color>
     <color name="purple">#9856C4</color>
     <color name="orange">#F8C949</color>
+    <color name="text_color">#FF000000</color>
+    <color name="gray">#464545</color>
+
+    <!--    theme-->
+    <!-- Primary colors -->
+    <color name="primary">#6200EE</color>
+    <color name="primary_variant">#3700B3</color>
+    <color name="on_primary">#FFFFFF</color>
+
+    <!-- Secondary colors -->
+    <color name="secondary">#03DAC6</color>
+    <color name="secondary_variant">#018786</color>
+    <color name="on_secondary">#FFFFFF</color>
+
+    <!-- Background colors -->
+    <color name="background">#FBFBFB</color>
+    <color name="on_background">#000000</color>
+
+    <!-- Surface colors -->
+    <color name="surface">#FFFFFF</color>
+    <color name="on_surface">#000000</color>
+
+    <!-- Text colors -->
+    <color name="text_primary">#000000</color> <!-- Warna untuk mode terang -->
+    <color name="text_primary_dark">#FFFFFF</color> <!-- Warna untuk mode gelap -->
+
 </resources>
