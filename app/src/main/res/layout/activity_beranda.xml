@@ -8,59 +8,52 @@
     android:layout_height="match_parent"
     tools:context=".BerandaActivity">
 
-        <ImageView
-            android:id="@+id/home_icon"
-            android:layout_width="39dp"
-            android:layout_height="33dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:src="@drawable/ic_home"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageButton
-            android:id="@+id/profile_icon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:contentDescription="@string/profile_icon_description"
-            android:src="@drawable/ic_user"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/date_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:text="February 28, 2024"
-            android:fontFamily="@font/dmsans"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@id/profile_icon"
-            app:layout_constraintHorizontal_bias="0.092"
-            app:layout_constraintStart_toEndOf="@id/home_icon"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <!-- Circle Background -->
-
         <!-- Smiley Emoticon -->
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:popupTheme="@style/ThemeOverlay.AppCompat"
+            tools:layout_editor_absoluteX="0dp">
+
+                <ImageButton
+                    android:id="@+id/home_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="start|center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/baseline_home_filled_24" />
+
+                <TextView
+                    android:id="@+id/date_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="10dp"
+                    android:text="12, Desember 2024"
+                    android:textAppearance="@style/ToolbarTitleText"
+                    android:textSize="15sp" />
+
+                <include layout="@layout/switch_item" />
+        </androidx.appcompat.widget.Toolbar>
+
         <TextView
             android:id="@+id/greeting_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="Hello, [Name]"
+            android:layout_marginTop="24dp"
             android:fontFamily="@font/urbanist_bold"
-            android:textColor="@android:color/black"
+            android:text="Hello, [Name]"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/date_text" />
+            app:layout_constraintTop_toBottomOf="@+id/toolbar2" />
 
         <TextView
             android:id="@+id/subtitle_text"
@@ -70,7 +63,6 @@
             android:paddingBottom="25dp"
             android:fontFamily="@font/dmsans"
             android:text="Today is your good day :D"
-            android:textColor="@android:color/black"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -95,9 +87,9 @@
             android:layout_marginTop="372dp"
             android:fontFamily="@font/urbanist_bold"
             android:text="Glad to see you happy"
-            android:textColor="@android:color/black"
             android:textSize="25sp"
             android:textStyle="bold"
+            android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.496"
             app:layout_constraintStart_toStartOf="parent"
@@ -111,7 +103,6 @@
             android:fontFamily="@font/dmsans"
             android:paddingBottom="5dp"
             android:text="Tell me about your day"
-            android:textColor="@android:color/black"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
@@ -127,7 +118,6 @@
             android:elevation="8dp"
             android:fontFamily="@font/urbanist_bold"
             android:gravity="center"
-            android:outlineSpotShadowColor="@color/black"
             android:padding="8dp"
             android:stateListAnimator="@null"
             android:text="Write a diary"

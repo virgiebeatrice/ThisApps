@@ -10,7 +10,3 @@
         android:centerY="1.0" />
     <corners android:radius="0dp" />
 </shape>
-
-
-
-

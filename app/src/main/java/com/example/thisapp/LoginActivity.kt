@@ -43,17 +43,7 @@ class LoginActivity : AppCompatActivity() {
         signUpButton = findViewById(R.id.signupButton)
 
         // Check login status and handle accordingly
-        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
-        val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
-
-        if (isLoggedIn) {
-            val email = sharedPreferences.getString("active_user_email", "") ?: ""
-            if (email.isNotEmpty()) {
-                checkUserPinStatus(email)
-            } else {
-                navigateToLogin()
-            }
-        }
+        checkLoginStatus()
 
         // Set listeners
         loginButton.setOnClickListener { handleLogin() }
@@ -64,6 +54,17 @@ class LoginActivity : AppCompatActivity() {
         passwordEditText.setOnEditorActionListener { _, _, _ ->
             handleLogin()
             true
+        }
+    }
+
+    private fun checkLoginStatus() {
+        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
+        val email = sharedPreferences.getString("active_user_email", "")
+
+        if (isLoggedIn && !email.isNullOrEmpty()) {
+            // User is logged in, check PIN status
+            checkUserPinStatus(email)
         }
     }
 
@@ -83,10 +84,11 @@ class LoginActivity : AppCompatActivity() {
                     fetchAndSaveUserData(email)
                     Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
 
-                    // Redirect ke halaman utama
-                    val intent = Intent(this, LandingPage::class.java)
-                    startActivity(intent)
-                    finish()
+                    // Save login state and email
+                    saveLoginState(email)
+
+                    // Check PIN status
+                    checkUserPinStatus(email)
                 } else {
                     Toast.makeText(this, "Login failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
@@ -106,7 +108,8 @@ class LoginActivity : AppCompatActivity() {
                     if (pin.isNullOrEmpty()) {
                         navigateToSetupPin()
                     } else {
-                        navigateToLanding()
+                        // PIN exists, navigate to LandingPage
+                        navigateToLandingPage()
                     }
                 }
             }
@@ -125,8 +128,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun validateInput(email: String, password: String): Boolean {
-        // Updated password pattern: Minimum 8 characters, 1 uppercase, 1 lowercase, 1 digit, 1 special character
-        val passwordPattern = Regex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,12}$")
+        val passwordPattern = Regex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!%?&])[A-Za-z\\d@\$!%?&]{8,12}\$")
 
         return when {
             email.isEmpty() -> {
@@ -145,6 +147,8 @@ class LoginActivity : AppCompatActivity() {
                 false
             }
             !password.matches(passwordPattern) -> {
+                // Tambahkan log di sini
+                println("Invalid password: $password")
                 passwordEditText.error = "Password must be 8-12 characters, contain uppercase, lowercase, number, and special character"
                 passwordEditText.requestFocus()
                 false
@@ -170,14 +174,8 @@ class LoginActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun navigateToLanding() {
+    private fun navigateToLandingPage() {
         val intent = Intent(this, LandingPage::class.java)
-        startActivity(intent)
-        finish()
-    }
-
-    private fun navigateToLogin() {
-        val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish()
     }
@@ -205,5 +203,4 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "Failed to fetch user data: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
-
 }

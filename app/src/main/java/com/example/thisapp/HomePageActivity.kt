@@ -2,18 +2,24 @@ package com.example.thisapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.SwitchCompat
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 class HomePageActivity : AppCompatActivity() {
@@ -31,6 +37,13 @@ class HomePageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_page)
+
+        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val isDarkMode = sharedPreferences.getBoolean("isDarkMode", false)
+
+        AppCompatDelegate.setDefaultNightMode(
+            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        )
 
         // Initialize FirebaseAuth and Firestore
         firebaseAuth = FirebaseAuth.getInstance()
@@ -56,15 +69,30 @@ class HomePageActivity : AppCompatActivity() {
         historyAdapter = DiaryAdapter(historyList)
         recyclerView.adapter = historyAdapter
 
-        // Initialize Home Icon
-        val homeIcon: ImageView = findViewById(R.id.home_icon)
-        homeIcon.setOnClickListener {
-            val intent = Intent(this, HomePageActivity::class.java)
-            startActivity(intent)
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar2)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        val dateTextView1: TextView = findViewById(R.id.date_text)
+
+        val currentDate1 = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault()).format(Date())
+        dateTextView1.text = currentDate1
+
+        val switchMode: SwitchCompat = findViewById(R.id.switch_mode)
+
+        switchMode.isChecked = isDarkMode
+
+        switchMode.setOnCheckedChangeListener { _, isChecked ->
+            AppCompatDelegate.setDefaultNightMode(
+                if (isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+            )
+            saveThemePreference(isChecked)
+            recreate() // Refresh aktivitas agar perubahan tema terlihat
         }
 
         // Navigate to MainActivity (mood scan)
-        val scanMoodButton: Button = findViewById(R.id.scan_mood_button)
+        val scanMoodButton: ImageButton = findViewById(R.id.scan_mood_button) // Ganti dengan ID ImageButton
         scanMoodButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
@@ -90,6 +118,31 @@ class HomePageActivity : AppCompatActivity() {
         loadHistoryForDate(getFormattedDate(), userId)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_profile -> {
+                // Aksi untuk tombol profile, misalnya pindah ke halaman profil
+                val intent = Intent(this, ProfileSettings::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun saveThemePreference(isDarkMode: Boolean) {
+        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            putBoolean("isDarkMode", isDarkMode)
+            apply() // Pastikan perubahan disimpan
+        }
+    }
+
     private fun updateDateText(dateTextView: TextView) {
         dateTextView.text = getFormattedDate()
     }
@@ -111,16 +164,16 @@ class HomePageActivity : AppCompatActivity() {
                         // Display "No Data" message and hide RecyclerView
                         recyclerView.visibility = View.GONE
                         noDataTextView.visibility = View.VISIBLE
-                        noDataTextView.text = "Tidak ada data untuk tanggal $date"
+                        noDataTextView.text = "There are no diary entries for $date"
                     } else {
                         // Show data in RecyclerView and hide "No Data" message
                         recyclerView.visibility = View.VISIBLE
                         noDataTextView.visibility = View.GONE
 
                         for (document in documents) {
-                            val title = document.getString("title") ?: "Tidak ada judul"
-                            val content = document.getString("content") ?: "Konten kosong"
-                            val mood= document.getString("mood") ?: "mood kosong"
+                            val title = document.getString("title") ?: "There is no title"
+                            val content = document.getString("content") ?: "Empty content"
+                            val mood= document.getString("mood") ?: "No mood"
                             historyList.add(DiaryEntry(date, title, content, mood))
                         }
                         historyAdapter.notifyDataSetChanged()  // Notify adapter to update the UI
@@ -129,7 +182,7 @@ class HomePageActivity : AppCompatActivity() {
                 .addOnFailureListener { exception ->
                     Toast.makeText(
                         this,
-                        "Gagal memuat data: ${exception.message}",
+                        "Failed to load data: ${exception.message}",
                         Toast.LENGTH_SHORT
                     ).show()
                 }

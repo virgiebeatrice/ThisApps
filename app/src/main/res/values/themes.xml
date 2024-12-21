@@ -1,9 +1,30 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.ThisApp" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="Base.Theme.ThisApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/black</item>
     </style>
 
     <style name="Theme.ThisApp" parent="Base.Theme.ThisApp" />
+
+    <style name="ToolbarTitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="fontFamily">@font/dmsans</item> <!-- Gunakan font kustom -->
+        <item name="android:textSize">15sp</item> <!-- Ukuran teks -->
+        <item name="android:textColor">@color/black</item> <!-- Warna teks -->
+    </style>
+
+    <style name="ScreenBackground">
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
+        <item name="fontFamily">@font/dmsans</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="CustomCalendarTheme" parent="Theme.MaterialComponents.DayNight">
+        <item name="android:typeface">serif</item>
+        <item name="fontFamily">@font/dmsans</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
 </resources>

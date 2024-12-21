@@ -42,6 +42,7 @@ android {
 }
 
 dependencies {
+    // Core Android libraries
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -53,30 +54,39 @@ dependencies {
 
     // MongoDB Realm
     implementation("io.realm.kotlin:library-base:1.8.0")
-    implementation(libs.firebase.firestore)
 
-    implementation ("androidx.camera:camera-core:1.4.0")
-    implementation ("androidx.camera:camera-camera2:1.4.0")
-    implementation ("androidx.camera:camera-lifecycle:1.4.0")
-    implementation ("androidx.camera:camera-view:1.4.0")
-    // Gunakan ML Kit dari Play Services
-    implementation(libs.play.services.mlkit.face.detection)
-    implementation ("com.google.guava:guava:32.1.2-android")
-    implementation("org.greenrobot:eventbus:3.3.1")
-
-    //firebase
+    // Firebase and other services (using Firebase BOM for version management)
     implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
     implementation("com.google.firebase:firebase-auth")
-    implementation(libs.firebase.messaging)
-    implementation(libs.firebase.database.ktx)
-    implementation(libs.firebase.storage.ktx)
-    implementation(libs.firebase.storage)
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-messaging")
 
-    //cloudinary
+    // CameraX
+    implementation("androidx.camera:camera-core:1.4.0")
+    implementation("androidx.camera:camera-camera2:1.4.0")
+    implementation("androidx.camera:camera-lifecycle:1.4.0")
+    implementation("androidx.camera:camera-view:1.4.0")
+
+    // ML Kit (from Play Services)
+    implementation(libs.play.services.mlkit.face.detection)
+
+    // Guava for additional utilities
+    implementation("com.google.guava:guava:32.1.2-android")
+
+    // EventBus for messaging
+    implementation("org.greenrobot:eventbus:3.3.1")
+
+    // Cloudinary and Glide for image handling
     implementation("com.cloudinary:cloudinary-android:3.0.2")
     implementation("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 
+    // Firebase Realtime Database & Storage (via BOM)
+    implementation(libs.firebase.database.ktx)
+    implementation(libs.firebase.storage.ktx)
+    implementation(libs.firebase.storage)
+
+    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -5,15 +5,20 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.SwitchCompat
 import com.bumptech.glide.Glide
 import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.ErrorInfo
@@ -25,6 +30,9 @@ import com.google.firebase.firestore.SetOptions
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class ProfileSettings : AppCompatActivity() {
     private var db: FirebaseFirestore? = null
@@ -48,17 +56,51 @@ class ProfileSettings : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile_settings)
 
+        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val isDarkMode = sharedPreferences.getBoolean("isDarkMode", false)
+
+        AppCompatDelegate.setDefaultNightMode(
+            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        )
+
         // Initialize Firebase and SharedPreferences
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
-        sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+
+        val backIcon: ImageView = findViewById(R.id.back_button)
+        backIcon.setOnClickListener {
+            // Intent to open HomePageActivity
+            val intent = Intent(this, HomePageActivity::class.java)
+            startActivity(intent)
+        }
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar2)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        val dateTextView1: TextView = findViewById(R.id.date_text)
+
+        val currentDate1 = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault()).format(Date())
+        dateTextView1.text = currentDate1
+
+        val switchMode: SwitchCompat = findViewById(R.id.switch_mode)
+
+        switchMode.isChecked = isDarkMode
+
+        switchMode.setOnCheckedChangeListener { _, isChecked ->
+            AppCompatDelegate.setDefaultNightMode(
+                if (isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+            )
+            saveThemePreference(isChecked)
+            recreate() // Refresh aktivitas agar perubahan tema terlihat
+        }
+
 
         // Initialize view components
         textViewUsername = findViewById(R.id.usernametext)
         textViewEmail = findViewById(R.id.emailtext)
         sectionEditProfile = findViewById(R.id.section_edit_profile)
         logoutButton = findViewById(R.id.button2)
-        imageViewBack = findViewById(R.id.imageViewback)
         imageViewAvatar = findViewById(R.id.imageView4)
 
         // Initialize Cloudinary only once
@@ -111,6 +153,31 @@ class ProfileSettings : AppCompatActivity() {
         imageViewBack?.setOnClickListener {
             startActivity(Intent(this, BerandaActivity::class.java))
             finish()
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_profile -> {
+                // Aksi untuk tombol profile, misalnya pindah ke halaman profil
+                val intent = Intent(this, ProfileSettings::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun saveThemePreference(isDarkMode: Boolean) {
+        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            putBoolean("isDarkMode", isDarkMode)
+            apply() // Pastikan perubahan disimpan
         }
     }
 
